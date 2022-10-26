@@ -1,0 +1,55 @@
+# Explication du fichier
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+
+
+# Étapes
+10;25
+10;50
+10;75
+12;100
+4;200
+
+# Attaques
+3;Accident de la route
+3;Panne d'essence
+3;Crevé
+4;Limitation de vitesse
+5;Feu rouge
+
+# Défence
+6;Réparations 
+6;Essence 
+6;Roue de secours 
+6;Fin de limitation de vitesse 
+14;Feu vert
+
+# Bottes
+1;As du volant
+1;Camion-Citerne
+1;Increvable
+1;Prioritaire
+
+# Météo
+3;Neige
+3;Beau Temps
+3;Vent dans le Dos
+
+# QUELQUES MAUVAISES VALEURS POUR TESTER LE PARSEUR
+  
+  3;Accident de la route #3;Accident de la route
+  3   ;     Accident de la route       
+13; blabla
+12;300;
+12; 25 # blabla
+trois;80
