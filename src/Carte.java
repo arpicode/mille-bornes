@@ -12,15 +12,15 @@ public class Carte {
 
     private static final String[] typesDesCartes = { "Étape", "Attaque", "Défense", "Botte", "Météo" };
     private static final String[][] nomsDesCartes = new String[][] {
-            // nomDesCartes[0] = Etapes
+            // nomDesCartes[ETAPE] => Etapes
             { "25", "50", "75", "100", "200" },
-            // nomDesCartes[1] = Attaques
+            // nomDesCartes[ATTAQUE] => Attaques
             { "Stop", "Limite de Vitesse", "Panne d'Essence", "Crevé", "Accident" },
-            // nomDesCartes[2] = Défenses
+            // nomDesCartes[DEFENSE] => Défenses
             { "Roulez", "Fin de Limite de Vitesse", "Essence", "Roue de Secours", "Réparation" },
-            // nomDesCartes[3] = Bottes
-            { "Prioritaire", "Citerne", "Increvable", "Crevé", "As du Volant" },
-            // nomDesCartes[4] = Meteo
+            // nomDesCartes[BOTTE] => Bottes
+            { "Prioritaire", "Citerne", "Increvable", "As du Volant" },
+            // nomDesCartes[METEO] => Meteo
             { "Neige", "Beau Temps", "Vent dans le Dos" }
     };
 
