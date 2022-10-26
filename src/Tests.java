@@ -17,30 +17,29 @@ public class Tests {
 
     }
 
-    public static void testPileDeCarte() {
-        Carte[] cartes = new Carte[] {
-                new Carte("25"),
-                new Carte("50"),
-                new Carte("75"),
-                new Carte("100"),
-                new Carte("200"),
-                new Carte("Crevé"),
-                new Carte("fin de limite de vitesse")
-        };
+    public static void testPileCarte() {
+        ArrayList<Carte> cartes = new ArrayList<Carte>();
+        cartes.add(new Carte("25"));
+        cartes.add(new Carte("50"));
+        cartes.add(new Carte("75"));
+        cartes.add(new Carte("100"));
+        cartes.add(new Carte("200"));
+        cartes.add(new Carte("Crevé"));
 
-        cartes = PileCartes.melanger(cartes);
         PileCartes pioche = new PileCartes(cartes);
+        System.out.print(
+                "pioche devrait être égale à [[Étape] 25, [Étape] 50, [Étape] 75, [Étape] 100, [Étape] 200, [Attaque] Crevé] : ");
+        System.out.println(pioche.toString()
+                .compareTo("[[Étape] 25, [Étape] 50, [Étape] 75, [Étape] 100, [Étape] 200, [Attaque] Crevé]") == 0);
 
-        System.out.println(pioche);
-        System.out.println(pioche.peek());
+        PileCartes.melanger(pioche);
+        System.out.println("pioche après mélange : " + pioche);
     }
 
     public static void testConfiguration() {
-        ArrayList<String> cartes = Configuration.parse("./testFiles/config_test1.txt");
+        ArrayList<String> ligneCartes = Configuration.parse("config.txt");
+        System.out.println("La config par défaut devrait avoir 22 lignes de cartes : " + (ligneCartes.size() == 22));
 
-        for (String carte : cartes) {
-            System.out.println(carte);
-        }
     }
 
     public static void main(String[] args) {
@@ -50,10 +49,10 @@ public class Tests {
         testCarte();
         System.out.println();
 
-        System.out.println("-------------------------------");
-        System.out.println("Tests de la classe PileDeCartes");
-        System.out.println("-------------------------------");
-        testPileDeCarte();
+        System.out.println("-----------------------------");
+        System.out.println("Tests de la classe PileCartes");
+        System.out.println("-----------------------------");
+        testPileCarte();
         System.out.println();
 
         System.out.println("--------------------------------");
