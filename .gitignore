@@ -109,4 +109,6 @@ replay_pid*
 .history
 .ionide
 
-# End of https://www.toptal.com/developers/gitignore/api/java,eclipse,visualstudiocode
+# config file files
+*.old
+config.txt
