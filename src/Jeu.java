@@ -24,11 +24,11 @@ public class Jeu {
     }
 
     /**
-     * Permet d'initialiser la pioche
+     * Permet d'initialiser les pioche
      * 
      * @param ArrayList<String>cartes
      */
-    public void initialiserPioche() {
+    public void initialiserPioches() {
 
         // parcour le fichier ctrl+espace
         for (int i = 0; i < this.carteParse.size(); i++) {
@@ -42,8 +42,7 @@ public class Jeu {
 
                 Carte carte = new Carte(nomCarte);
 
-                // ajouter la carte au dessus de la pile correspondante si elle
-                // est valide
+                // ajouter la carte au dessus de la pile correspondante si elle est valide
                 if (carte.estValide()) {
                     if (carte.getType() != Carte.METEO) {
                         this.pioche.push(carte);
@@ -59,7 +58,7 @@ public class Jeu {
     public static void main(String[] args) {
 
         Jeu jeu1 = new Jeu("config.txt");
-        jeu1.initialiserPioche();
+        jeu1.initialiserPioches();
         System.out.println(jeu1.getPioche());
     }
 

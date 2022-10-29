@@ -34,7 +34,7 @@ public class Configuration {
             for (String currentLine : lines) {
                 // Ignorer les lignes de commentaire
                 if (!isComment(currentLine)) {
-                    // Récuperer ce qui pourrait être une carte
+                    // Récupérer ce qui pourrait être une carte
                     currentLine = getCardFromLine(currentLine);
                     if (currentLine != null) {
                         result.add(currentLine);

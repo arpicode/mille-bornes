@@ -1,0 +1,13 @@
+
+
+# QUELQUES VALEURS MAL FORMéES POUR TESTER LE PARSEUR
+  
+  3;Accident de la route #3;Accident de la route
+  3   ;     Accident de la route       
+13; blabla
+12;300;
+12; 25 # blabla
+trois;80
+2  ;   200
+
+5 ; crevé # 3;Crevé

@@ -37,9 +37,12 @@ public class Tests {
     }
 
     public static void testConfiguration() {
-        ArrayList<String> ligneCartes = Configuration.parse("config.txt");
-        System.out.println("La config par défaut devrait avoir 22 lignes de cartes : " + (ligneCartes.size() == 22));
+        ArrayList<String> ligneCartes1 = Configuration.parse("config.txt");
+        System.out.println("La config par défaut devrait avoir 22 lignes de cartes : " + (ligneCartes1.size() == 22));
 
+        ArrayList<String> ligneCartes2 = Configuration.parse("testFiles/config_test2.txt");
+        System.out.println("La config par test2 devrait avoir 7 lignes de cartes : " + (ligneCartes2.size() == 7));
+        System.out.println(ligneCartes2);
     }
 
     public static void main(String[] args) {
