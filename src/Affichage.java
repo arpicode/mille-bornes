@@ -1,4 +1,8 @@
 public class Affichage {
+
+        /**
+         * Classe static interne qui défini les couleurs d'affichage de la console.
+         */
         public static class Color {
                 public static final String BLACK = "\033[30m";
                 public static final String GRAY = "\033[90m";
@@ -19,25 +23,26 @@ public class Affichage {
                 public static final String BOLD = "\033[1m";
         }
 
+        /**
+         * Affiche le nom du jeu : Mille Bornes.
+         */
         public static void nomJeu() {
                 clearScreen();
-                System.out.println(Color.CYAN + " __  __ _ _ _        " + Color.LIGHT_RED + "____");
-                System.out
-                                .println(Color.CYAN + "|  \\/  (_) | | ___  " + Color.LIGHT_RED
-                                                + "| __ )  ___  _ __ _ __   ___  ___");
-                System.out.println(
-                                Color.CYAN + "| |\\/| | | | |/ _ \\" + Color.LIGHT_RED
-                                                + " |  _ \\ / _ \\| '__| '_ \\ / _ \\/ __|");
-                System.out.println(
-                                Color.CYAN + "| |  | | | | |  __/ " + Color.LIGHT_RED
-                                                + "| |_) | (_) | |  | | | |  __/\\__ \\");
-                System.out.println(
-                                Color.CYAN + "|_|  |_|_|_|_|\\___| " + Color.LIGHT_RED
-                                                + "|____/ \\___/|_|  |_| |_|\\___||___/"
-                                                + Color.END);
-
+                System.out.println(Color.CYAN + " __  __ _ _ _" + Color.LIGHT_RED + "____");
+                System.out.println(Color.CYAN + "|  \\/  (_) | | ___  " + Color.LIGHT_RED
+                                + "| __ )  ___  _ __ _ __   ___  ___");
+                System.out.println(Color.CYAN + "| |\\/| | | | |/ _ \\" + Color.LIGHT_RED
+                                + " |  _ \\ / _ \\| '__| '_ \\ / _ \\/ __|");
+                System.out.println(Color.CYAN + "| |  | | | | |  __/ " + Color.LIGHT_RED
+                                + "| |_) | (_) | |  | | | |  __/\\__ \\");
+                System.out.println(Color.CYAN + "|_|  |_|_|_|_|\\___| " + Color.LIGHT_RED
+                                + "|____/ \\___/|_|  |_| |_|\\___||___/"
+                                + Color.END);
         }
 
+        /**
+         * Efface la console.
+         */
         public static void clearScreen() {
                 System.out.println("\033\143");
         }
