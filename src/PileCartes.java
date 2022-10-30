@@ -2,11 +2,11 @@ import java.util.ArrayList;
 import java.util.Stack;
 
 /**
- * Classe abstraite définissant une pile de cartes.
+ * Classe définissant une pile de cartes.
  * 
  * @author Les Bornés
  */
-public abstract class PileCartes extends Stack<Carte> {
+public class PileCartes extends Stack<Carte> {
 
     public PileCartes() {
         super();
