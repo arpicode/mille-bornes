@@ -2,31 +2,26 @@ import java.util.ArrayList;
 
 public class Jeu {
 
-    private PileCartes pioche;
-    private PileCartes piocheMeteo;
-    private PileCartes defausse;
+    private Pioche pioche;
+    private Pioche piocheMeteo;
+    private Defausse defausse;
     private ArrayList<String> carteParse;
 
     public Jeu(String configFileName) {
-
         this.carteParse = Configuration.parse(configFileName); // return un ArrayList de string
-        this.pioche = new PileCartes();
-        this.piocheMeteo = new PileCartes();
-        this.defausse = new PileCartes();
+        this.pioche = new Pioche();
+        this.piocheMeteo = new Pioche();
+        this.defausse = new Defausse();
+    }
+
+    public void demarrer() {
+        Affichage.nomJeu();
     }
 
     /**
-     * @return this.pioche
-     */
-    public PileCartes getPioche() {
-
-        return this.pioche;
-    }
-
-    /**
-     * Permet d'initialiser les pioche
+     * Permet d'initialiser les pioches
      * 
-     * @param ArrayList<String>cartes
+     * @param ArrayList<String> cartes
      */
     public void initialiserPioches() {
 
@@ -52,7 +47,28 @@ public class Jeu {
                 }
             }
         }
+    }
 
+    /**
+     * @return Pioche la pioche du jeu.
+     */
+    public Pioche getPioche() {
+
+        return this.pioche;
+    }
+
+    /**
+     * @return Pioche la pioche des cartes météo jeu.
+     */
+    public Pioche getPiocheMeteo() {
+        return piocheMeteo;
+    }
+
+    /**
+     * @return Defausse la pile de défausse.
+     */
+    public Defausse getDefausse() {
+        return defausse;
     }
 
     public static void main(String[] args) {
@@ -60,6 +76,7 @@ public class Jeu {
         Jeu jeu1 = new Jeu("config.txt");
         jeu1.initialiserPioches();
         System.out.println(jeu1.getPioche());
+        System.out.println("Nb cartes : " + jeu1.getPioche().size());
     }
 
 }
