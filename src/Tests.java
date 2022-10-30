@@ -9,39 +9,37 @@ public class Tests {
 
         System.out.println("carte1 devrait être non null : " + (carte1 != null));
         System.out.println("carte1 devrait être une carte non valide : " + (!carte1.estValide()));
-        System.out.println(
-                "carte2 devrait être églal à [Étape] 50 : " + (carte2.toString().compareTo("[Étape] 50") == 0));
-        System.out.println("carte2 devrait être une carte valide : " + (carte2.estValide()));
-        System.out.println("carte3 devrait être églal à [Défense] Roue de Secours : "
-                + (carte3.toString().compareTo("[Défense] Roue de Secours") == 0));
 
+        System.out.println("carte2 devrait être églal à 50 : " + carte2.toString());
+        System.out.println("carte2 devrait être une carte valide : " + (carte2.estValide()));
+
+        System.out.println("carte3 devrait être églal à Roue de Secours : " + carte3.toString());
     }
 
     public static void testPileCarte() {
         ArrayList<Carte> cartes = new ArrayList<Carte>();
-        cartes.add(new Carte("25"));
+        cartes.add(new Carte("Roulez"));
         cartes.add(new Carte("50"));
-        cartes.add(new Carte("75"));
+        cartes.add(new Carte("Citerne"));
         cartes.add(new Carte("100"));
         cartes.add(new Carte("200"));
         cartes.add(new Carte("Crevé"));
 
-        PileCartes pioche = new PileCartes(cartes);
-        System.out.print(
-                "pioche devrait être égale à [[Étape] 25, [Étape] 50, [Étape] 75, [Étape] 100, [Étape] 200, [Attaque] Crevé] : ");
-        System.out.println(pioche.toString()
-                .compareTo("[[Étape] 25, [Étape] 50, [Étape] 75, [Étape] 100, [Étape] 200, [Attaque] Crevé]") == 0);
+        Pioche pioche = new Pioche(cartes);
+        System.out.print("pioche devrait être égale à [Roulez, 50, Citerne, 100, 200, Crevé] : ");
+        System.out.println(pioche.toString());
 
-        PileCartes.melanger(pioche);
+        pioche.melanger();
         System.out.println("pioche après mélange : " + pioche);
     }
 
     public static void testConfiguration() {
         ArrayList<String> ligneCartes1 = Configuration.parse("config.txt");
-        System.out.println("La config par défaut devrait avoir 22 lignes de cartes : " + (ligneCartes1.size() == 22));
+        System.out.println("config.txt devrait avoir 22 lignes de cartes : " + (ligneCartes1.size() == 22));
 
         ArrayList<String> ligneCartes2 = Configuration.parse("testFiles/config_test2.txt");
-        System.out.println("La config par test2 devrait avoir 7 lignes de cartes : " + (ligneCartes2.size() == 7));
+        System.out.println("config_test2.txt devrait avoir 7 lignes de cartes : " + (ligneCartes2.size() == 7));
+        System.out.println("Lignes trouvées dans config_test2.txt");
         System.out.println(ligneCartes2);
     }
 
