@@ -22,9 +22,9 @@ public class Carte {
             // nomDesCartes[ETAPE] => tableau avec des Etapes
             { "25", "50", "75", "100", "200" },
             // nomDesCartes[ATTAQUE] => tableau avec des Attaques
-            { "Stop", "Limite de Vitesse", "Panne d'Essence", "Crevé", "Accident" },
+            { "Feu Rouge", "Limite de Vitesse", "Panne d'Essence", "Crevé", "Accident" },
             // nomDesCartes[PARADE] => tableau avec des Parades
-            { "Roulez", "Fin de Limite de Vitesse", "Essence", "Roue de Secours", "Réparation" },
+            { "Feu Vert", "Fin de Limite de Vitesse", "Essence", "Roue de Secours", "Réparation" },
             // nomDesCartes[BOTTE] => tableau avec des Bottes
             { "Prioritaire", "Citerne", "Increvable", "As du Volant" },
             // nomDesCartes[METEO] => tableau avec des Meteos

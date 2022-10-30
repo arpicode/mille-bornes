@@ -28,7 +28,8 @@ public class Affichage {
          */
         public static void nomJeu() {
                 clearScreen();
-                System.out.println(Color.CYAN + " __  __ _ _ _" + Color.LIGHT_RED + "____");
+                System.out.println(Color.CYAN + " __  __ _ _ _" + Color.LIGHT_RED
+                                + "        ____");
                 System.out.println(Color.CYAN + "|  \\/  (_) | | ___  " + Color.LIGHT_RED
                                 + "| __ )  ___  _ __ _ __   ___  ___");
                 System.out.println(Color.CYAN + "| |\\/| | | | |/ _ \\" + Color.LIGHT_RED

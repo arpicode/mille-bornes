@@ -18,7 +18,7 @@ public class Tests {
 
     public static void testPileCarte() {
         ArrayList<Carte> cartes = new ArrayList<Carte>();
-        cartes.add(new Carte("Roulez"));
+        cartes.add(new Carte("Feu Vert"));
         cartes.add(new Carte("50"));
         cartes.add(new Carte("Citerne"));
         cartes.add(new Carte("100"));
@@ -26,7 +26,7 @@ public class Tests {
         cartes.add(new Carte("Crevé"));
 
         Pioche pioche = new Pioche(cartes);
-        System.out.print("pioche devrait être égale à [Roulez, 50, Citerne, 100, 200, Crevé] : ");
+        System.out.print("pioche devrait être égale à [Feu Vert, 50, Citerne, 100, 200, Crevé] : ");
         System.out.println(pioche.toString());
 
         pioche.melanger();
