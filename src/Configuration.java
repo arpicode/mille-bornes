@@ -10,7 +10,18 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Classe responsable de la configuration du jeu.
+ * 
+ * @author Les Bornés
+ */
 public class Configuration {
+
+    // Expression régulière qui match une ligne qui commence avec une paire de
+    // valeurs possibles : <nombre_de_cartes>;<nom_de_la_carte>. (Il est permis
+    // d'avoir des espaces devant la ligne et autour du ';'.)
+    private static final String cardRegexp = "^(\\d+\\s*;\\s*[a-z0-9é'\\- ]+[a-z0-9é])";
+    private static final Pattern cardPattern = Pattern.compile(cardRegexp, Pattern.CASE_INSENSITIVE);
 
     /**
      * Parse le fichier de configuration.
@@ -23,12 +34,12 @@ public class Configuration {
 
         // Regarder si le fichier de configuration existe
         if (!exists(fullFileName)) {
-            // TODO l'affichage du message devra être fait par la classe Affichage
             System.out.println("Création du fichier de configuration par défaut...");
             createDefault(fullFileName);
         }
 
         try {
+            System.out.println("Lecture du fichier de configuration...");
             List<String> lines = Files.readAllLines(Paths.get(fullFileName), StandardCharsets.UTF_8);
 
             for (String currentLine : lines) {
@@ -41,13 +52,19 @@ public class Configuration {
                     }
                 }
             }
-        } catch (Exception exception) {
-            exception.printStackTrace();
+        } catch (IOException exception) {
+            System.err.println("Une erreur est survenue pendant la lecture du fichier de configuration.");
+            System.err.println(exception.getMessage());
         }
 
         return result;
     }
 
+    /**
+     * Crée le fichier de configuration par défaut.
+     * 
+     * @param fileName nom du fichier créé.
+     */
     private static void createDefault(String fileName) {
         List<String> lines = Arrays.asList(
                 "#  __  __ _ _ _        ____",
@@ -72,6 +89,7 @@ public class Configuration {
                 "# Pour recréer la configuration par défaut vous pouvez toujours",
                 "# supprimer ce fichier et relancer le jeu.",
                 "",
+                "",
                 "# Étapes",
                 "10;25",
                 "10;50",
@@ -80,24 +98,24 @@ public class Configuration {
                 "4;200",
                 "",
                 "# Attaques",
-                "3;Accident",
+                "5;Stop",
+                "4;Limitation de Vitesse",
                 "3;Panne d'Essence",
                 "3;Crevé",
-                "4;Limitation de Vitesse",
-                "5;Stop",
+                "3;Accident",
                 "",
                 "# Défense",
-                "6;Réparations",
+                "14;Roulez",
+                "6;Fin de Limitation de Vitesse",
                 "6;Essence",
                 "6;Roue de Secours",
-                "6;Fin de Limitation de Vitesse",
-                "14;Roulez",
+                "6;Réparations",
                 "",
                 "# Bottes",
-                "1;As du volant",
+                "1;Prioritaire",
                 "1;Citerne",
                 "1;Increvable",
-                "1;Prioritaire",
+                "1;As du volant",
                 "",
                 "# Météo",
                 "3;Neige",
@@ -106,8 +124,9 @@ public class Configuration {
 
         try {
             Files.write(Paths.get(fileName), lines, StandardCharsets.UTF_8, StandardOpenOption.CREATE);
-        } catch (IOException exeption) {
-            exeption.printStackTrace();
+        } catch (IOException exception) {
+            System.err.println("Une erreur est survenue pendant la création du fichier de configuration.");
+            System.err.println(exception.getMessage());
         }
     }
 
@@ -122,21 +141,17 @@ public class Configuration {
 
     /**
      * Vérifie si la ligne contient une chaîne de caractère qui correspond au
-     * format <nombre_de_cartes>;<nom_de_la_carte>.
+     * format <nombre_de_cartes>;<nom_de_la_carte>. (Cette paire de valeur ne
+     * représente pas forcement une carte valide.)
      * 
-     * @param line
-     * @return String correspondant à une paire
-     *         <nombre_de_cartes>;<nom_de_la_carte>, ou null si le motif n'est pas
-     *         présent.
+     * @param line String ligne à vérifier.
+     * @return String correspondant à une paire de valeurs au format
+     *         <nombre_de_cartes>;<nom_de_la_carte>, ou null si le motif n'est
+     *         pas présent.
      */
     private static String getCardFromLine(String line) {
         String tmp = line.trim();
-
-        // Expression régulière qui match une ligne qui commence avec une paire
-        // possible <nombre_de_cartes>;<nom_de_la_carte>
-        final String regexp = "^(\\d+\\s*;\\s*[a-z0-9é'\\- ]+[a-z0-9é])";
-        final Pattern pattern = Pattern.compile(regexp, Pattern.CASE_INSENSITIVE);
-        final Matcher matcher = pattern.matcher(tmp);
+        final Matcher matcher = cardPattern.matcher(tmp);
 
         if (matcher.find()) {
             return matcher.group(0);
@@ -146,10 +161,10 @@ public class Configuration {
     }
 
     /**
-     * Teste si la ligne est un commentaire.
+     * Teste si la ligne est un commentaire ou null.
      * 
      * @param line
-     * @return true si c'est un commentaire, false si non.
+     * @return true si c'est un commentaire ou null, false si non.
      */
     private static boolean isComment(String line) {
         if (line.trim().isEmpty())
