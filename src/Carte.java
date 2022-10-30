@@ -6,21 +6,28 @@
 public class Carte {
     public static final int ETAPE = 0;
     public static final int ATTAQUE = 1;
-    public static final int DEFENSE = 2;
+    public static final int PARADE = 2;
     public static final int BOTTE = 3;
     public static final int METEO = 4;
 
-    private static final String[] typesDesCartes = { "Étape", "Attaque", "Défense", "Botte", "Météo" };
+    private static final String[] typesDesCartes = { "Étape", "Attaque", "Parade", "Botte", "Météo" };
+
+    /*
+     * L'ordre des cartes attaques, parade et bottes est important par exemple
+     * Stop est à l'indice 0 et sa parade qui est Roulez est aussi à l'indice 0.
+     * Il y a un cas particulier avec la botte Prioritaire qui contre à la fois
+     * Stop et Limite de Vitesse.
+     */
     private static final String[][] nomsDesCartes = new String[][] {
-            // nomDesCartes[ETAPE] => Etapes
+            // nomDesCartes[ETAPE] => tableau avec des Etapes
             { "25", "50", "75", "100", "200" },
-            // nomDesCartes[ATTAQUE] => Attaques
+            // nomDesCartes[ATTAQUE] => tableau avec des Attaques
             { "Stop", "Limite de Vitesse", "Panne d'Essence", "Crevé", "Accident" },
-            // nomDesCartes[DEFENSE] => Défenses
+            // nomDesCartes[PARADE] => tableau avec des Parades
             { "Roulez", "Fin de Limite de Vitesse", "Essence", "Roue de Secours", "Réparation" },
-            // nomDesCartes[BOTTE] => Bottes
+            // nomDesCartes[BOTTE] => tableau avec des Bottes
             { "Prioritaire", "Citerne", "Increvable", "As du Volant" },
-            // nomDesCartes[METEO] => Meteo
+            // nomDesCartes[METEO] => tableau avec des Meteos
             { "Neige", "Beau Temps", "Vent dans le Dos" }
     };
 
@@ -48,6 +55,8 @@ public class Carte {
                 }
             }
         }
+
+        this.nom = nom;
         this.type = -1;
         return false;
     }
@@ -69,12 +78,31 @@ public class Carte {
         return type;
     }
 
+    public String[] getTypesCarte() {
+        return typesDesCartes;
+    }
+
     /**
      * @return String représentant la carte.
      */
     public String toString() {
         if (this.estValide()) {
-            return "[" + typesDesCartes[this.type] + "] " + this.nom;
+            String couleurCarte = "";
+            switch (this.type) {
+                case ETAPE:
+                    couleurCarte = Affichage.Color.CYAN;
+                    break;
+                case ATTAQUE:
+                    couleurCarte = Affichage.Color.LIGHT_RED;
+                    break;
+                case PARADE:
+                    couleurCarte = Affichage.Color.LIGHT_GREEN;
+                    break;
+                case BOTTE:
+                    couleurCarte = Affichage.Color.LIGHT_MAGENTA;
+                    break;
+            }
+            return couleurCarte + this.nom + Affichage.Color.END;
         }
 
         return "La carte '" + this.nom + "' n'est pas valide!";
