@@ -11,6 +11,7 @@ public class Jeu {
     private Defausse defausse;
     private ArrayList<String> carteParsees;
     private ArrayList<Joueur> joueurs;
+    private boolean estTermine;
 
     public Jeu(String configFileName) {
         this.carteParsees = Configuration.parse(configFileName); // return un ArrayList de string
@@ -18,14 +19,32 @@ public class Jeu {
         this.piocheMeteo = new Pioche();
         this.defausse = new Defausse();
         this.joueurs = new ArrayList<Joueur>();
+        this.estTermine = false;
     }
 
     public void demarrer() {
         this.initialiser();
+        this.distribuerCartes();
 
-        this.afficherDonnees();
+        // this.afficherDonnees(); // Affiche l'état actuel du jeu pour débugger
+
+        // Boucle de jeu
+        int i = 0;
+        while (!this.estTermine) {
+            // donner la main au joueur courant
+            joueurs.get(this.idJoueurCourant).jouerTour(joueurs);
+            // mettre à jour le joueur courant
+            this.idJoueurCourant = (this.idJoueurCourant + 1) % nbJoueurs;
+
+            if (++i >= 10)
+                estTermine = true;
+        }
+
     }
 
+    /**
+     * Initialise les attributs du jeu
+     */
     private void initialiser() {
         this.nbJoueurs = Affichage.saisieNombreJoueurs();
 
@@ -37,13 +56,29 @@ public class Jeu {
         }
 
         // Initialiser le joueur courant en fonction de l'âge des joueurs.
-        this.idJoueurCourant = getIdDuPlusJeuneJoueur();
+        this.idJoueurCourant = idDuPlusJeuneJoueur();
 
         // Initialiser les pioches.
         this.initialiserPioches();
     }
 
-    private int getIdDuPlusJeuneJoueur() {
+    /**
+     * Distribuer la main de départ de 6 cartes à tous les joueurs.
+     */
+    private void distribuerCartes() {
+        for (int i = 0; i < 6; i++) {
+            for (Joueur joueur : joueurs) {
+                joueur.getMain().add(this.pioche.pop());
+            }
+        }
+    }
+
+    /**
+     * Cherche l'id du plus jeune des joueurs.
+     * 
+     * @return id du plus jeune joueur.
+     */
+    private int idDuPlusJeuneJoueur() {
         int ageMin = Integer.MAX_VALUE;
         int id = 0;
         for (int i = 0; i < this.joueurs.size(); i++) {
@@ -83,8 +118,14 @@ public class Jeu {
                 }
             }
         }
+
+        this.pioche.melanger();
+        this.piocheMeteo.melanger();
     }
 
+    /**
+     * Affichier les données du jeu. Utilisé pour tester la classe.
+     */
     public void afficherDonnees() {
         // Nombre de joueurs
         System.out.println("Nombre de joueur: " + this.nbJoueurs);
@@ -107,7 +148,9 @@ public class Jeu {
 
         // Joueurs
         System.out.println("Joueurs: ");
-        System.out.println(this.joueurs);
+        for (Joueur joueur : joueurs) {
+            System.out.println(joueur);
+        }
         System.out.println();
 
         // Joueur courant

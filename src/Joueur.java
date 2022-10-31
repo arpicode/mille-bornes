@@ -21,8 +21,14 @@ public abstract class Joueur {
         nbJoueur++;
     }
 
+    public abstract void jouerTour(ArrayList<Joueur> joueurs);
+
     public int getId() {
         return id;
+    }
+
+    public String getNom() {
+        return nom;
     }
 
     public int getAge() {
@@ -46,6 +52,14 @@ public abstract class Joueur {
     }
 
     public String toString() {
-        return "id: " + this.id + " nom: " + this.nom + " âge: " + this.age;
+        String result = "  [id: " + this.id;
+        result += "  nom: " + this.nom;
+        result += "  âge: " + this.age + "]\n";
+
+        result += "    main: ";
+        for (Carte carte : main) {
+            result += "[" + carte + "]" + " ";
+        }
+        return result;
     }
 }
