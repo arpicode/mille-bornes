@@ -52,11 +52,12 @@ public class Affichage {
      * @return le nombre de joueurs.
      */
     public static int saisieNombreJoueurs() {
-        final String messageErreur = "Erreur de saisie ! Veuillez recommencer.\n";
+        nomJeu();
+        final String messageErreur = Color.RED + "Erreur de saisie ! Veuillez recommencer.\n" + Color.END;
         int nbJoueurs = 0;
 
         do {
-            System.out.printf("Entrez le nombre de joueurs (entre %d et %d) : ",
+            System.out.printf(Color.YELLOW + "Entrez le nombre de joueurs (entre %d et %d) : " + Color.END,
                     Jeu.NB_JOUEURS_MIN,
                     Jeu.NB_JOUEURS_MAX);
 
@@ -76,6 +77,55 @@ public class Affichage {
         } while (nbJoueurs < Jeu.NB_JOUEURS_MIN || nbJoueurs > Jeu.NB_JOUEURS_MAX);
 
         return nbJoueurs;
+    }
+
+    /**
+     * Demander à l'utilisateur de saisir le nom et l'âge d'un joueur jusqu'à ce
+     * que la saisie soit valide.
+     * 
+     * @return Le nom et l'âge du joueur sous la forme <nom>;<âge>.
+     */
+    public static String saisieNomEtAgeJoueur(int numeroJoueur) {
+        nomJeu();
+        String nomEtAge = "";
+        boolean estValide = false;
+
+        do {
+            System.out.print(Color.YELLOW);
+            System.out.printf("Entrez le nom et l'âge du joueur n°%d :\n", numeroJoueur);
+            System.out.print(Color.GRAY);
+            System.out.println("(Un nom peut contenir des lettres et '-'. Exemple : Jean-Pierre 14)");
+            System.out.print(Color.END);
+
+            // Vérifier si la prochaine valeur est un nom valide
+            if (scanner.hasNext("\\p{L}[\\p{L}\\-]+\\p{L}")) {
+                nomEtAge += scanner.next();
+                estValide = true;
+
+                // Vérifier si la prochaine valeur est un entier
+                if (scanner.hasNextInt()) {
+                    nomEtAge += ";" + scanner.nextInt();
+                } else {
+                    // L'utilisateur n'a pas saisi un âge valide
+                    System.out.print(Color.RED);
+                    System.out.println("Erreur de saisie ! l'âge n'est pas valide.\n");
+                    System.out.print(Color.END);
+                    estValide = false;
+                    nomEtAge = "";
+                    scanner.nextLine();
+
+                }
+
+            } else {
+                // L'utilisateur n'a pas saisi un nom valide
+                System.out.print(Color.RED);
+                System.out.println("Erreur de saisie ! le nom n'est pas valide.\n");
+                System.out.print(Color.END);
+                scanner.nextLine();
+            }
+        } while (!estValide);
+
+        return nomEtAge;
     }
 
     /**

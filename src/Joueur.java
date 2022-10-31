@@ -11,17 +11,26 @@ public abstract class Joueur {
     private String nom;
     private ArrayList<Carte> main;
     private ZoneDeJeu zoneDeJeu;
+    private int age;
 
-    public Joueur(int id, String nom) {
-        nbJoueur++;
-        this.id = id;
+    public Joueur(String nom) {
+        this.id = nbJoueur;
         this.nom = nom;
         this.main = new ArrayList<Carte>();
         this.zoneDeJeu = new ZoneDeJeu();
+        nbJoueur++;
     }
 
     public int getId() {
         return id;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
     }
 
     public static int getNbJoueurs() {
@@ -37,6 +46,6 @@ public abstract class Joueur {
     }
 
     public String toString() {
-        return this.nom;
+        return "id: " + this.id + " nom: " + this.nom + " âge: " + this.age;
     }
 }
