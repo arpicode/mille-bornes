@@ -92,9 +92,10 @@ public class Affichage {
 
         do {
             System.out.print(Color.YELLOW);
-            System.out.printf("Entrez le nom et l'âge du joueur n°%d :\n", numeroJoueur);
+            System.out.printf("Entrez le nom (sans accents) et l'âge du joueur n°%d :\n", numeroJoueur);
             System.out.print(Color.GRAY);
-            System.out.println("(Un nom peut contenir des lettres et '-'. Exemple : Jean-Pierre 14)");
+            System.out.println(
+                    "(Un nom doit contenir 3 caractères minimum : des lettres et '-'. Exemple : Jean-Pierre 14)");
             System.out.print(Color.END);
 
             // Vérifier si la prochaine valeur est un nom valide
@@ -115,7 +116,6 @@ public class Affichage {
                     scanner.nextLine();
 
                 }
-
             } else {
                 // L'utilisateur n'a pas saisi un nom valide
                 System.out.print(Color.RED);
