@@ -3,6 +3,7 @@ import java.util.ArrayList;
 public class Jeu {
     public static final int NB_JOUEURS_MIN = 2;
     public static final int NB_JOUEURS_MAX = 6;
+    public static final int TAILLE_MAIN = 6;
 
     private int nbJoueurs;
     private int idJoueurCourant;
@@ -31,17 +32,28 @@ public class Jeu {
         // Boucle de jeu
         int i = 0;
         while (!this.estTermine) {
+            // Annoncer le tour du joueur
+
             // Afficher les zones de jeu des joueurs
             for (Joueur joueur : joueurs) {
                 Affichage.zoneDeJeu(joueur, this.idJoueurCourant);
             }
-            // donner la main au joueur courant
-            joueurs.get(this.idJoueurCourant).jouerTour(joueurs);
-            // mettre à jour le joueur courant
+
+            // Afficher la main du joueur courant
+            // Affichage.mainJoueur(joueurs.get(this.idJoueurCourant));
+
+            // Donner la main au joueur courant
+            joueurs.get(this.idJoueurCourant).jouerTour(joueurs, pioche, piocheMeteo, defausse);
+
+            // Passer au joueur suivant.
             this.idJoueurCourant = (this.idJoueurCourant + 1) % nbJoueurs;
 
-            if (++i >= 10) // on s'arrête à 5 tours pour tester
+            if (++i >= 5) // on s'arrête à 5 tours pour tester
                 estTermine = true;
+
+            System.out.println("Au joueur suivant. Appuyer sur une touche pour continuer...");
+            System.console().readLine();
+            Affichage.clearScreen();
         }
 
     }

@@ -129,6 +129,22 @@ public class Affichage {
     }
 
     /**
+     * Affiche la main d'un joueur.
+     * 
+     * @param joueur joueur
+     */
+    public static void mainJoueur(Joueur joueur) {
+        System.out.print(Color.YELLOW + "\nMain de " + Color.END);
+        System.out.println(joueur.getNom() + Color.YELLOW + " : " + Color.END);
+
+        for (int i = 0; i < joueur.getMain().size(); i++) {
+            System.out.print((i + 1) + "-" + "[" + joueur.getMain().get(i) + "] ");
+        }
+
+        System.out.println("\n");
+    }
+
+    /**
      * Affiche la zone de jeu d'un joueur.
      * 
      * @param joueur joueur.
@@ -145,15 +161,16 @@ public class Affichage {
         System.out.println(Color.YELLOW + " : " + Color.END);
 
         // Afficher la zone VITESSE
-        affichePile(joueur, "Vitesse", Joueur.Zone.VITESSE);
+        affichePile(joueur, "Vitesse  ", Joueur.Zone.VITESSE);
         // Afficher la zone BATTAILLE
         affichePile(joueur, "Battaille", Joueur.Zone.BATAILLE);
         // Afficher la zone BOTTE
-        affichePile(joueur, "Botte", Joueur.Zone.BOTTE);
+        affichePile(joueur, "Botte    ", Joueur.Zone.BOTTE);
         // Afficher la zone METEO
-        affichePile(joueur, "Météo", Joueur.Zone.METEO);
+        affichePile(joueur, "Météo    ", Joueur.Zone.METEO);
         // Afficher la zone BATTAILLE
-        affichePile(joueur, "Étape", Joueur.Zone.ETAPE);
+        affichePile(joueur, "Étape    ", Joueur.Zone.ETAPE);
+        System.out.println();
     }
 
     /**
