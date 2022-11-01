@@ -26,17 +26,21 @@ public class Jeu {
         this.initialiser();
         this.distribuerCartes();
 
-        // this.afficherDonnees(); // Affiche l'état actuel du jeu pour débugger
+        this.afficherDonnees(); // Affiche l'état actuel du jeu pour débugger
 
         // Boucle de jeu
         int i = 0;
         while (!this.estTermine) {
+            // Afficher les zones de jeu des joueurs
+            for (Joueur joueur : joueurs) {
+                Affichage.zoneDeJeu(joueur, this.idJoueurCourant);
+            }
             // donner la main au joueur courant
             joueurs.get(this.idJoueurCourant).jouerTour(joueurs);
             // mettre à jour le joueur courant
             this.idJoueurCourant = (this.idJoueurCourant + 1) % nbJoueurs;
 
-            if (++i >= 10)
+            if (++i >= 10) // on s'arrête à 5 tours pour tester
                 estTermine = true;
         }
 

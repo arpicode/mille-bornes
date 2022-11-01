@@ -129,6 +129,49 @@ public class Affichage {
     }
 
     /**
+     * Affiche la zone de jeu d'un joueur.
+     * 
+     * @param joueur joueur.
+     */
+    public static void zoneDeJeu(Joueur joueur, int idJoueurCourant) {
+        // Affiche le nom du joueur courant en blanc et les autres en gris.
+        System.out.print(Color.YELLOW + "Zone de jeu de ");
+        if (joueur.getId() == idJoueurCourant) {
+            System.out.print(Color.END);
+        } else {
+            System.out.print(Color.GRAY);
+        }
+        System.out.print(joueur.getNom());
+        System.out.println(Color.YELLOW + " : " + Color.END);
+
+        // Afficher la zone VITESSE
+        affichePile(joueur, "Vitesse", Joueur.Zone.VITESSE);
+        // Afficher la zone BATTAILLE
+        affichePile(joueur, "Battaille", Joueur.Zone.BATAILLE);
+        // Afficher la zone BOTTE
+        affichePile(joueur, "Botte", Joueur.Zone.BOTTE);
+        // Afficher la zone METEO
+        affichePile(joueur, "Météo", Joueur.Zone.METEO);
+        // Afficher la zone BATTAILLE
+        affichePile(joueur, "Étape", Joueur.Zone.ETAPE);
+    }
+
+    /**
+     * Affiche une pile de carte de la zone de jeu
+     * 
+     * @param joueur joueur
+     * @param pile   nom de la pile
+     * @param zone   type de zone de la pile
+     */
+    private static void affichePile(Joueur joueur, String pile, Joueur.Zone zone) {
+        System.out.print("  " + pile + " : ");
+        for (Carte carte : joueur.getZoneDeJeu().get(zone)) {
+            System.out.print("[" + carte + "]");
+        }
+        System.out.println();
+    }
+
+    /**
      * Efface la console.
      */
     public static void clearScreen() {
