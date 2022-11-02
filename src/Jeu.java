@@ -14,6 +14,11 @@ public class Jeu {
     private ArrayList<Joueur> joueurs;
     private boolean estTermine;
 
+    /**
+     * Constructeur du jeu.
+     * 
+     * @param configFileName // Fichier de configuration.
+     */
     public Jeu(String configFileName) {
         this.carteParsees = Configuration.parse(configFileName); // return un ArrayList de string
         this.pioche = new Pioche();
@@ -21,19 +26,26 @@ public class Jeu {
         this.defausse = new Defausse();
         this.joueurs = new ArrayList<Joueur>();
         this.estTermine = false;
+
+        if (!this.initialiser()) {
+            System.out.println("Impossible d'initialiser le jeu !");
+            System.exit(1);
+        }
     }
 
+    /**
+     * Démarre la partie de Mille Bornes.
+     */
     public void demarrer() {
-        this.initialiser();
         this.distribuerCartes();
 
-        this.afficherDonnees(); // Affiche l'état actuel du jeu pour débugger
+        // this.afficherDonnees(); // Affiche l'état actuel du jeu pour débugger
 
         // Boucle de jeu
         int i = 0;
         while (!this.estTermine) {
             // Annoncer le tour du joueur
-
+            Affichage.annoncerJoueur(joueurs.get(this.idJoueurCourant));
             // Afficher les zones de jeu des joueurs
             for (Joueur joueur : joueurs) {
                 Affichage.zoneDeJeu(joueur, this.idJoueurCourant);
@@ -51,9 +63,8 @@ public class Jeu {
             if (++i >= 5) // on s'arrête à 5 tours pour tester
                 estTermine = true;
 
-            System.out.println("Au joueur suivant. Appuyer sur une touche pour continuer...");
+            System.out.println("Au joueur suivant. Appuyer sur ENTRER pour continuer...");
             System.console().readLine();
-            Affichage.clearScreen();
         }
 
     }
@@ -61,7 +72,8 @@ public class Jeu {
     /**
      * Initialise les attributs du jeu
      */
-    private void initialiser() {
+    private boolean initialiser() {
+        boolean estInitialise = true;
         this.nbJoueurs = Affichage.saisieNombreJoueurs();
 
         // Initialiser les joueurs.
@@ -75,14 +87,16 @@ public class Jeu {
         this.idJoueurCourant = idDuPlusJeuneJoueur();
 
         // Initialiser les pioches.
-        this.initialiserPioches();
+        estInitialise &= this.initialiserPioches();
+
+        return estInitialise;
     }
 
     /**
      * Distribuer la main de départ de 6 cartes à tous les joueurs.
      */
     private void distribuerCartes() {
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < Jeu.TAILLE_MAIN; i++) {
             for (Joueur joueur : joueurs) {
                 joueur.getMain().add(this.pioche.pop());
             }
@@ -92,7 +106,7 @@ public class Jeu {
     /**
      * Cherche l'id du plus jeune des joueurs.
      * 
-     * @return id du plus jeune joueur.
+     * @return Id du plus jeune joueur.
      */
     private int idDuPlusJeuneJoueur() {
         int ageMin = Integer.MAX_VALUE;
@@ -110,9 +124,12 @@ public class Jeu {
     /**
      * Permet d'initialiser les pioches.
      * 
-     * @param ArrayList<String> cartes
+     * @param ArrayList<String> Cartes lues depuis le fichier de configuration.
+     * @return true si les pioches sont valides, false si non.
      */
-    private void initialiserPioches() {
+    private boolean initialiserPioches() {
+        boolean estPiochesValide = true;
+
         // parcour le fichier ctrl+espace
         for (int i = 0; i < this.carteParsees.size(); i++) {
             String[] tempresult = this.carteParsees.get(i).split(";");
@@ -131,16 +148,23 @@ public class Jeu {
                     } else {
                         this.piocheMeteo.push(carte);
                     }
+                } else {
+                    System.out.println("La carte " + carte.getNom() + " n'est pas valide !");
+                    estPiochesValide = false;
                 }
             }
         }
 
-        this.pioche.melanger();
-        this.piocheMeteo.melanger();
+        if (estPiochesValide) {
+            this.pioche.melanger();
+            this.piocheMeteo.melanger();
+        }
+
+        return estPiochesValide;
     }
 
     /**
-     * Affichier les données du jeu. Utilisé pour tester la classe.
+     * Afficher les données du jeu. Utilisé pour tester la classe.
      */
     public void afficherDonnees() {
         // Nombre de joueurs
@@ -175,7 +199,7 @@ public class Jeu {
     }
 
     /**
-     * @return Pioche la pioche du jeu.
+     * @return La pioche normale.
      */
     public Pioche getPioche() {
 
@@ -183,25 +207,17 @@ public class Jeu {
     }
 
     /**
-     * @return Pioche la pioche des cartes météo jeu.
+     * @return La pioche météo.
      */
     public Pioche getPiocheMeteo() {
         return piocheMeteo;
     }
 
     /**
-     * @return Defausse la pile de défausse.
+     * @return La pile de défausse.
      */
     public Defausse getDefausse() {
         return defausse;
-    }
-
-    public static void main(String[] args) {
-
-        Jeu jeu1 = new Jeu("config.txt");
-        jeu1.initialiserPioches();
-        System.out.println(jeu1.getPioche());
-        System.out.println("Nb cartes : " + jeu1.getPioche().size());
     }
 
 }

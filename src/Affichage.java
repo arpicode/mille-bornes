@@ -128,6 +128,13 @@ public class Affichage {
         return nomEtAge;
     }
 
+    public static void annoncerJoueur(Joueur joueur) {
+        clearScreen();
+        System.out.print(Color.YELLOW + "C'est au tour de " + Color.END);
+        System.out.print(joueur.getNom());
+        System.out.println(Color.YELLOW + " de jouer !\n" + Color.END);
+    }
+
     /**
      * Affiche la main d'un joueur.
      * 
