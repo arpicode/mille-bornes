@@ -32,7 +32,7 @@ public class JoueurHumain extends Joueur {
         if (this.getKmParcourus() >= 500 && this.getZoneDeJeu().get(Zone.METEO).size() < 1) {
             Carte carteMeteo = this.piocherCarteMeteo(piocheMeteo);
             if (carteMeteo != null) {
-                this.parler("Je pioche une carte Météo : " + carteMeteo + ".\n");
+                this.parler("Je pioche une carte Météo : [" + carteMeteo + "].\n");
             } else {
                 this.parler("La pioche est vide, pas de carte pour moi :(\n");
             }
@@ -40,16 +40,25 @@ public class JoueurHumain extends Joueur {
 
         // Si le joueur à au moins une carte en main
         if (this.getMain().size() > 0) {
-            // Choisir une action : 1 jouer une carte, 2 passer.
-            int action = this.choisirAction();
+            boolean tourFini = false;
 
-            // Traitement de l'action : 2 Passer.
-            if (action == 2) {
-                this.passerTour(defausse);
-            } else if (action == 1) {
-                // Traitement de l'action : 1 Jouer une carte.
-                System.out.println("TODO pas encore implémenté...");
-            }
+            do {
+                // Choisir une action : 1 jouer une carte, 2 passer.
+                int action = this.choisirAction();
+
+                // Traitement de l'action : 2 Passer.
+                if (action == 2) {
+                    this.passerTour(defausse);
+                    tourFini = true;
+                } else if (action == 1) {
+                    // Traitement de l'action : 1 Jouer une carte.
+                    int numeroCarteJouee = jouerCarte(choisirNumeroCarte());
+
+                    if (numeroCarteJouee != -1) {
+                        tourFini = true;
+                    }
+                }
+            } while (!tourFini);
         } else {
             // Le joueur n'a pas de cartes en main et doit passer son tour.
             this.parler("Je n'ai plus de cartes, je passe mon tour.");

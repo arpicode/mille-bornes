@@ -4,30 +4,58 @@
  * @author Les Bornés
  */
 public class Carte {
-    public static final int ETAPE = 0;
-    public static final int ATTAQUE = 1;
-    public static final int PARADE = 2;
-    public static final int BOTTE = 3;
-    public static final int METEO = 4;
+    public static final int TYPE_ETAPE = 0;
+    public static final int TYPE_ATTAQUE = 1;
+    public static final int TYPE_PARADE = 2;
+    public static final int TYPE_BOTTE = 3;
+    public static final int TYPE_METEO = 4;
 
-    private static final String[] typesDesCartes = { "Étape", "Attaque", "Parade", "Botte", "Météo" };
+    public static final int ETAPE_25 = 0;
+    public static final int ETAPE_50 = 1;
+    public static final int ETAPE_75 = 2;
+    public static final int ETAPE_100 = 3;
+    public static final int ETAPE_200 = 4;
+
+    public static final int FEU_ROUGE = 0;
+    public static final int LIMITE_VITESSE = 1;
+    public static final int PANNE_ESSENCE = 2;
+    public static final int CREVE = 3;
+    public static final int ACCIDENT = 4;
+
+    public static final int FEU_VERT = 0;
+    public static final int FIN_LIMITE_VITESSE = 1;
+    public static final int ESSENCE = 2;
+    public static final int ROUE_SECOURS = 3;
+    public static final int REPARATION = 4;
+
+    public static final int PRIORITAIRE = 0;
+    public static final int CITERNE = 1;
+    public static final int INCREVABLE = 2;
+    public static final int AS_VOLANT = 3;
+
+    public static final int NEIGE = 0;
+    public static final int BEAU_TEMPS = 1;
+    public static final int VENT_DOS = 2;
 
     /*
      * L'ordre des cartes attaques, parade et bottes est important par exemple
-     * Stop est à l'indice 0 et sa parade qui est Roulez est aussi à l'indice 0.
-     * Il y a un cas particulier avec la botte Prioritaire qui contre à la fois
-     * Stop et Limite de Vitesse.
+     * Feu Rouge est à l'indice 0 et sa parade qui est Feu Vert est aussi à
+     * l'indice 0. Il y a un cas particulier avec la botte Prioritaire qui
+     * contre à la fois Feu Rouge et Limite de Vitesse.
+     * 
+     * Exemple d'utilisation pour obtenir le nom de la carte "Roue de Secours"
+     * => getCartes()[TYPE_PARADE][ROUE_SECOURS]
      */
     private static final String[][] nomsDesCartes = new String[][] {
-            // nomDesCartes[ETAPE] => tableau avec des Etapes
+            // nomDesCartes[TYPE_ETAPE] => tableau avec des Etapes
             { "25", "50", "75", "100", "200" },
-            // nomDesCartes[ATTAQUE] => tableau avec des Attaques
+            // nomDesCartes[TYPE_ATTAQUE] => tableau avec des Attaques
             { "Feu Rouge", "Limite de Vitesse", "Panne d'Essence", "Crevé", "Accident" },
-            // nomDesCartes[PARADE] => tableau avec des Parades
+            // nomDesCartes[TYPE_PARADE] => tableau avec des Parades
             { "Feu Vert", "Fin de Limite de Vitesse", "Essence", "Roue de Secours", "Réparation" },
-            // nomDesCartes[BOTTE] => tableau avec des Bottes
+            // nomDesCartes[TYPE_BOTTE] => tableau avec des Bottes
             { "Prioritaire", "Citerne", "Increvable", "As du Volant" },
-            // nomDesCartes[METEO] => tableau avec des Meteos
+            // nomDesCartes[TYPE_METEO] => tableau avec des Meteos
             { "Neige", "Beau Temps", "Vent dans le Dos" }
     };
 
@@ -74,12 +102,16 @@ public class Carte {
         return nom;
     }
 
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
     public int getType() {
         return type;
     }
 
-    public String[] getTypesCarte() {
-        return typesDesCartes;
+    public static String[][] getCartes() {
+        return nomsDesCartes;
     }
 
     /**
@@ -89,16 +121,16 @@ public class Carte {
         if (this.estValide()) {
             String couleurCarte = "";
             switch (this.type) {
-                case ETAPE:
+                case TYPE_ETAPE:
                     couleurCarte = Affichage.Color.CYAN;
                     break;
-                case ATTAQUE:
+                case TYPE_ATTAQUE:
                     couleurCarte = Affichage.Color.LIGHT_RED;
                     break;
-                case PARADE:
+                case TYPE_PARADE:
                     couleurCarte = Affichage.Color.LIGHT_GREEN;
                     break;
-                case BOTTE:
+                case TYPE_BOTTE:
                     couleurCarte = Affichage.Color.LIGHT_MAGENTA;
                     break;
             }

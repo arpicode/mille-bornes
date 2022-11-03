@@ -57,14 +57,21 @@ public class Jeu {
             // Donner la main au joueur courant
             joueurs.get(this.idJoueurCourant).jouerTour(joueurs, pioche, piocheMeteo, defausse);
 
-            // Passer au joueur suivant.
-            this.idJoueurCourant = (this.idJoueurCourant + 1) % nbJoueurs;
-
-            if (++i >= 5) // on s'arrête à 5 tours pour tester
+            // Le joueur a fini son tour, regarder si il a atteind les 1000 Bornes
+            if (joueurs.get(this.idJoueurCourant).getKmParcourus() > 1000) {
                 estTermine = true;
+                // TODO afficher le gagnant.
+            } else {
+                // Passer au joueur suivant.
+                this.idJoueurCourant = (this.idJoueurCourant + 1) % nbJoueurs;
 
-            System.out.println("Au joueur suivant. Appuyer sur ENTRER pour continuer...");
-            System.console().readLine();
+                if (++i >= 5) // on s'arrête à 5 tours pour tester
+                    estTermine = true;
+
+                System.out.println("Au joueur suivant. Appuyer sur ENTRER pour continuer...");
+                System.console().readLine();
+            }
+
         }
 
     }
@@ -143,7 +150,7 @@ public class Jeu {
 
                 // ajouter la carte au dessus de la pile correspondante si elle est valide
                 if (carte.estValide()) {
-                    if (carte.getType() != Carte.METEO) {
+                    if (carte.getType() != Carte.TYPE_METEO) {
                         this.pioche.push(carte);
                     } else {
                         this.piocheMeteo.push(carte);
