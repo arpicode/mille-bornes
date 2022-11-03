@@ -52,7 +52,7 @@ public class JoueurHumain extends Joueur {
                     tourFini = true;
                 } else if (action == 1) {
                     // Traitement de l'action : 1 Jouer une carte.
-                    int numeroCarteJouee = jouerCarte(choisirNumeroCarte());
+                    int numeroCarteJouee = jouerCarte(choisirCarte(), joueurs);
 
                     if (numeroCarteJouee != -1) {
                         tourFini = true;
@@ -85,13 +85,67 @@ public class JoueurHumain extends Joueur {
         return choix;
     }
 
+    public int choisirCarte() {
+        int choix = 0;
+
+        if (!this.getMain().isEmpty()) {
+            String input;
+            String regex = "^\\s*[1-" + this.getMain().size() + "]\\s*$";
+
+            do {
+                this.parler("Je choisis la carte n° ");
+                input = System.console().readLine();
+
+                if (Pattern.matches(regex, input)) {
+                    choix = Integer.parseInt(input.trim());
+                } else {
+                    this.parler("Oops je me suis trompé(e) !\n");
+                }
+            } while (choix == 0);
+        } else {
+            parler("Je n'ai pas de cartes en main :(\n");
+        }
+
+        return choix;
+    }
+
+    public int choisirJoueur(ArrayList<Joueur> joueurs) {
+        String input;
+        String regex = "^\\s*[";
+        String choixDesJoueurs = "";
+        int choix = 0;
+
+        // Construire le menu de sélection des joueurs.
+        for (Joueur joueur : joueurs) {
+            if (joueur.getId() != this.getId()) {
+                choixDesJoueurs += (joueur.getId() + 1) + "-[" + joueur.getNom() + "] ";
+                regex += (joueur.getId() + 1);
+            }
+        }
+        regex += "]\\s*$";
+
+        do {
+            this.parler("Je choisis d'attaquer " + choixDesJoueurs + " : ");
+            input = System.console().readLine();
+
+            if (Pattern.matches(regex, input)) {
+                choix = Integer.parseInt(input.trim());
+            } else {
+                this.parler("Oops je me suis trompé(e) !\n");
+            }
+
+        } while (choix == 0);
+
+        return choix;
+    }
+
     public void passerTour(Defausse defausse) {
         this.parler("Je passe mon tour. ");
 
         if (this.getMain().size() > Jeu.TAILLE_MAIN) {
             System.out.println("Je dois défausser une carte.");
             // Choisir la carte à défausser
-            int choix = this.choisirNumeroCarte();
+            int choix = this.choisirCarte();
             Carte carte = this.defausserCarte(choix, defausse);
 
             this.parler("C'était une carte [" + carte + "].\n");
