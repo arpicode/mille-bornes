@@ -20,8 +20,8 @@ public class Configuration {
     // Expression régulière qui match une ligne qui commence avec une paire de
     // valeurs possibles : <nombre_de_cartes>;<nom_de_la_carte>. (Il est permis
     // d'avoir des espaces devant la ligne et autour du ';'.)
-    private static final String cardRegexp = "^(\\d+\\s*;\\s*[a-z0-9é'\\- ]+[a-z0-9é])";
-    private static final Pattern cardPattern = Pattern.compile(cardRegexp, Pattern.CASE_INSENSITIVE);
+    private static final String cardRegexp = "^(\\s*\\d+\\s*;\\s*[\\d\\p{L}\\-' ]+[\\d\\p{L}])";
+    private static final Pattern cardPattern = Pattern.compile(cardRegexp);
 
     /**
      * Parse le fichier de configuration.
@@ -91,36 +91,36 @@ public class Configuration {
                 "",
                 "",
                 "# Étapes",
-                "10;25",
-                "10;50",
-                "10;75",
-                "12;100",
-                "4;200",
+                "10;" + Carte.getCartes()[Carte.TYPE_ETAPE][Carte.ETAPE_25],
+                "10;" + Carte.getCartes()[Carte.TYPE_ETAPE][Carte.ETAPE_50],
+                "10;" + Carte.getCartes()[Carte.TYPE_ETAPE][Carte.ETAPE_75],
+                "12;" + Carte.getCartes()[Carte.TYPE_ETAPE][Carte.ETAPE_100],
+                "4;" + Carte.getCartes()[Carte.TYPE_ETAPE][Carte.ETAPE_200],
                 "",
                 "# Attaques",
-                "5;Feu Rouge",
-                "4;Limite de Vitesse",
-                "3;Panne d'Essence",
-                "3;Crevé",
-                "3;Accident",
+                "5;" + Carte.getCartes()[Carte.TYPE_ATTAQUE][Carte.FEU_ROUGE],
+                "4;" + Carte.getCartes()[Carte.TYPE_ATTAQUE][Carte.LIMITE_VITESSE],
+                "3;" + Carte.getCartes()[Carte.TYPE_ATTAQUE][Carte.PANNE_ESSENCE],
+                "3;" + Carte.getCartes()[Carte.TYPE_ATTAQUE][Carte.CREVE],
+                "3;" + Carte.getCartes()[Carte.TYPE_ATTAQUE][Carte.ACCIDENT],
                 "",
-                "# Défense",
-                "14;Feu Vert",
-                "6;Fin de Limite de Vitesse",
-                "6;Essence",
-                "6;Roue de Secours",
-                "6;Réparation",
+                "# Parades",
+                "14;" + Carte.getCartes()[Carte.TYPE_PARADE][Carte.FEU_VERT],
+                "6;" + Carte.getCartes()[Carte.TYPE_PARADE][Carte.FIN_LIMITE_VITESSE],
+                "6;" + Carte.getCartes()[Carte.TYPE_PARADE][Carte.ESSENCE],
+                "6;" + Carte.getCartes()[Carte.TYPE_PARADE][Carte.ROUE_SECOURS],
+                "6;" + Carte.getCartes()[Carte.TYPE_PARADE][Carte.REPARATION],
                 "",
                 "# Bottes",
-                "1;Prioritaire",
-                "1;Citerne",
-                "1;Increvable",
-                "1;As du volant",
+                "1;" + Carte.getCartes()[Carte.TYPE_BOTTE][Carte.PRIORITAIRE],
+                "1;" + Carte.getCartes()[Carte.TYPE_BOTTE][Carte.CITERNE],
+                "1;" + Carte.getCartes()[Carte.TYPE_BOTTE][Carte.INCREVABLE],
+                "1;" + Carte.getCartes()[Carte.TYPE_BOTTE][Carte.AS_VOLANT],
                 "",
                 "# Météo",
-                "3;Neige",
-                "3;Beau Temps",
-                "3;Vent dans le Dos");
+                "3;" + Carte.getCartes()[Carte.TYPE_METEO][Carte.NEIGE],
+                "3;" + Carte.getCartes()[Carte.TYPE_METEO][Carte.BEAU_TEMPS],
+                "3;" + Carte.getCartes()[Carte.TYPE_METEO][Carte.VENT_DOS]);
 
         try {
             Files.write(Paths.get(fileName), lines, StandardCharsets.UTF_8, StandardOpenOption.CREATE);
