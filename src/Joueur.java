@@ -356,10 +356,10 @@ public abstract class Joueur {
     }
 
     /**
-     * Détermine si une carte parade est jouable
+     * Détermine si une carte parade est jouable.
      * 
-     * @param carteParade
-     * @return
+     * @param carteParade Carte parade.
+     * @return true si la carte parade est jouable, false si non.
      */
     private boolean peutJouerParade(Carte carteParade) {
         // Cas ou la carte parade est un Feu Vert.
