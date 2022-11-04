@@ -158,8 +158,7 @@ public abstract class Joueur {
                 return jouerCarteAttaque(numeroCarte, joueurs);
 
             case Carte.TYPE_PARADE:
-                System.out.println("TODO... implémenter les Parades");
-                break;
+                return jouerCarteParade(numeroCarte);
 
             case Carte.TYPE_BOTTE:
                 System.out.println("TODO... implémenter les Bottes");
@@ -183,7 +182,8 @@ public abstract class Joueur {
      * Permet au joueur de jouer une carte d'étape.
      * 
      * @param numeroCarte Numéro de la carte choisie.
-     * @return
+     * @return Numéro de la carte choisie ou -1 si la carte n'est pas
+     *         jouable.
      */
     private int jouerCarteEtape(int numeroCarte) {
         Carte carte = this.main.get(numeroCarte - 1);
@@ -243,6 +243,14 @@ public abstract class Joueur {
         }
     }
 
+    /**
+     * Permet au joueur de jouer une carte attaque sur un autre joueur.
+     * 
+     * @param numeroCarte Numéro de la carte choisie.
+     * @param joueurs     Joueur ciblé.
+     * @return Numéro de la carte choisie ou -1 si la carte n'est pas
+     *         jouable.
+     */
     private int jouerCarteAttaque(int numeroCarte, ArrayList<Joueur> joueurs) {
         // choisir le joueur à attaquer.
         int numeroJoueur = choisirJoueur(joueurs);
@@ -250,7 +258,6 @@ public abstract class Joueur {
             System.out.println(
                     joueurs.get(numeroJoueur - 1).getNom() + " est attaquable avec " + this.main.get(numeroCarte - 1));
             // Si l'attaque est une Limite de Vitesse il faut la poser sur la pile Vitesse.
-            System.out.println("n° carte : " + numeroCarte);
             if (this.main.get(numeroCarte - 1).getNom()
                     .compareTo(Carte.getCartes()[Carte.TYPE_ATTAQUE][Carte.LIMITE_VITESSE]) == 0) {
                 poserCarte(numeroCarte, joueurs.get(numeroJoueur - 1), Zone.VITESSE);
@@ -262,6 +269,14 @@ public abstract class Joueur {
         return -1;
     }
 
+    /**
+     * Permet de savoir si le joueur peut jouer une carte d'attaque sur un autre
+     * joueur.
+     * 
+     * @param carte  Carte jouée.
+     * @param joueur Joueur ciblé.
+     * @return true si la carte est jouable, false si non.
+     */
     private boolean peutAttaquerJoueur(Carte carte, Joueur joueur) {
         if (!estAttaque(joueur)) {
             // regarder si le joueur est sous limitation de vitesse.
@@ -317,7 +332,92 @@ public abstract class Joueur {
     }
 
     /**
-     * Permet de savoir si un joueur est attaqué.
+     * Permet au joueur de jouer une carte parade.
+     * 
+     * @param numeroCarte Numéro de la carte choisie.
+     * @return Numéro de la carte choisie ou -1 si la carte n'est pas
+     *         jouable.
+     */
+    private int jouerCarteParade(int numeroCarte) {
+        Carte carteParade = this.main.get(numeroCarte - 1);
+
+        if (peutJouerParade(carteParade)) {
+            // Si la parade est une Fin de Limite de Vitesse il faut la poser sur la pile
+            // Vitesse.
+            if (this.main.get(numeroCarte - 1).getNom()
+                    .compareTo(Carte.getCartes()[Carte.TYPE_PARADE][Carte.FIN_LIMITE_VITESSE]) == 0) {
+                poserCarte(numeroCarte, this, Zone.VITESSE);
+            } else {
+                poserCarte(numeroCarte, this, Zone.BATAILLE);
+            }
+            return numeroCarte;
+        }
+        return -1;
+    }
+
+    /**
+     * Détermine si une carte parade est jouable
+     * 
+     * @param carteParade
+     * @return
+     */
+    private boolean peutJouerParade(Carte carteParade) {
+        // Cas ou la carte parade est un Feu Vert.
+        if (carteParade.getNom().compareTo(Carte.getCartes()[Carte.TYPE_PARADE][Carte.FEU_VERT]) == 0) {
+            // Si la pile Bataille est vide
+            // OU le joueur est attaqué par une attaque Feu Rouge
+            // OU le joueur ne peut pas roulez ET qu'il n'est pas attaqué.
+            if (this.zoneDeJeu.get(Zone.BATAILLE).isEmpty()
+                    || this.estAttaquePar(Carte.FEU_ROUGE)
+                    || (!peutRouler(this) && !estAttaque(this))) {
+                return true;
+            }
+            System.out.println("Vous ne pouvez pas jouer un Feu Vert");
+        }
+        // Si le joueur est attaqué par une attaque Limite de Vitesse.
+        if (this.estAttaquePar(Carte.LIMITE_VITESSE)) {
+            // Si la carte parade est la carte Fin Limite de Vitesse.
+            if (carteParade.getNom().compareTo(Carte.getCartes()[Carte.TYPE_PARADE][Carte.FIN_LIMITE_VITESSE]) == 0) {
+                // Il peut jouer la carte.
+                return true;
+            }
+            System.err.println("Il vous faut une Fin de Limite de Vitesse.");
+        }
+        // Si le joueur est attaqué par une attaque Panne d'Essence.
+        if (this.estAttaquePar(Carte.PANNE_ESSENCE)) {
+            // Si la carte parade est la carte Essence.
+            if (carteParade.getNom().compareTo(Carte.getCartes()[Carte.TYPE_PARADE][Carte.ESSENCE]) == 0) {
+                // Il peut jouer la carte.
+                return true;
+            }
+            System.out.println("Il vous faut une carte Essence.");
+        }
+        // Si le joueur est attaqué par une attaque Crevé.
+        if (this.estAttaquePar(Carte.CREVE)) {
+            // Si la carte parade est une Roue de Secours.
+            if (carteParade.getNom().compareTo(Carte.getCartes()[Carte.TYPE_PARADE][Carte.ROUE_SECOURS]) == 0) {
+                // Il peut jouer la carte.
+                return true;
+            }
+            System.out.println("Il vous faut une Roue de Secours");
+        }
+        // Si le joueur est attaqué par une attaque Accident.
+        if (this.estAttaquePar(Carte.ACCIDENT)) {
+            // Si la carte parade est une Roue de Secours.
+            if (carteParade.getNom().compareTo(Carte.getCartes()[Carte.TYPE_PARADE][Carte.REPARATION]) == 0) {
+                // Il peut jouer la carte.
+                return true;
+            }
+            System.out.println("Il vous faut une Réparation");
+        }
+
+        System.err.println("impossible de jouer " + carteParade + " !\n");
+        return false;
+    }
+
+    /**
+     * Permet de savoir si un joueur est attaqué par autre chose qu'une Limite
+     * de Vitesse.
      * 
      * @param joueur Un joueur.
      * @return true si le joueur est attaqué, false si non.
@@ -325,6 +425,31 @@ public abstract class Joueur {
     private boolean estAttaque(Joueur joueur) {
         return !joueur.getZoneDeJeu().get(Zone.BATAILLE).isEmpty()
                 && joueur.getZoneDeJeu().get(Zone.BATAILLE).peek().getType() == Carte.TYPE_ATTAQUE;
+    }
+
+    /**
+     * Permet de savoir si le joueur est attaqué par une carte attaque d'après
+     * son indice dans le tableau Carte.getCartes().
+     * 
+     * @param indiceCarteAttaque Indice de la carte attaque.
+     * @return true si le joueur est attaqué par la carte, false si non.
+     */
+    private boolean estAttaquePar(int indiceCarteAttaque) {
+        String nomCarteAttaque = Carte.getCartes()[Carte.TYPE_ATTAQUE][indiceCarteAttaque];
+
+        if (!this.getZoneDeJeu().get(Zone.BATAILLE).isEmpty()) {
+            if (this.zoneDeJeu.get(Zone.BATAILLE).peek().getNom().compareTo(nomCarteAttaque) == 0) {
+                return true;
+            }
+        }
+
+        if (!this.getZoneDeJeu().get(Zone.VITESSE).isEmpty()) {
+            if (this.zoneDeJeu.get(Zone.VITESSE).peek().getNom().compareTo(nomCarteAttaque) == 0) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
