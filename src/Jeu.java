@@ -42,7 +42,7 @@ public class Jeu {
         // this.afficherDonnees(); // Affiche l'état actuel du jeu pour débugger
 
         // Boucle de jeu
-        int i = 0;
+        // int i = 0;
         while (!this.estTermine) {
             // Annoncer le tour du joueur
             Affichage.annoncerJoueur(joueurs.get(this.idJoueurCourant));
@@ -65,8 +65,8 @@ public class Jeu {
                 // Passer au joueur suivant.
                 this.idJoueurCourant = (this.idJoueurCourant + 1) % nbJoueurs;
 
-                if (++i >= 5) // on s'arrête à 5 tours pour tester
-                    estTermine = true;
+                // if (++i >= 5) // on s'arrête à 5 tours pour tester
+                // estTermine = true;
 
                 System.out.println("Au joueur suivant. Appuyer sur ENTRER pour continuer...");
                 System.console().readLine();
