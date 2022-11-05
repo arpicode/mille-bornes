@@ -8,10 +8,10 @@ import java.util.EnumMap;
  */
 public abstract class Joueur {
     /**
-     * Enumeration des différentes zones contenues dans la zone de jeu d'un
+     * Enumeration des différentes piles contenues dans la zone de jeu d'un
      * joueur.
      */
-    public static enum Zone {
+    public static enum Pile {
         VITESSE,
         BATAILLE,
         BOTTE,
@@ -24,7 +24,7 @@ public abstract class Joueur {
     private int id; // Identifiant unique du joueur.
     private String nom; // Nom du joueur.
     private ArrayList<Carte> main; // Les cartes dans la main du joueur.
-    private EnumMap<Zone, PileCartes> zoneDeJeu; // La zone de jeu du joueur.
+    private EnumMap<Pile, PileCartes> zoneDeJeu; // La zone de jeu du joueur.
     private int age; // L'âge du joueur.
     private int kmParcourus; // Les kilomètre parcourus du joueur.
     private int score; // Le score final du joueur.
@@ -53,8 +53,9 @@ public abstract class Joueur {
      * @param pioche      La pioche normale.
      * @param piocheMeteo La pioche météo.
      * @param defausse    La pile de défausse.
+     * @return true si le joueur a passé son tour, false si non.
      */
-    public abstract void jouerTour(ArrayList<Joueur> joueurs, Pioche pioche, Pioche piocheMeteo, Defausse defausse);
+    public abstract boolean jouerTour(ArrayList<Joueur> joueurs, Pioche pioche, Pioche piocheMeteo, Defausse defausse);
 
     /**
      * Permet au joueur de choisir son action pour son tour de jeu.
@@ -107,8 +108,10 @@ public abstract class Joueur {
         if (!pnormale.empty()) {
             carte = pnormale.pop();
             this.main.add(carte);
+            this.parler("Je pioche une carte.\n");
+        } else {
+            this.parler("La pioche est vide, pas de carte pour moi :(\n");
         }
-
         return carte;
     }
 
@@ -123,7 +126,7 @@ public abstract class Joueur {
         Carte carte = null;
         if (!pmeteo.empty()) {
             carte = pmeteo.pop();
-            this.zoneDeJeu.get(Zone.METEO).push(carte);
+            this.getPile(Pile.METEO).push(carte);
         }
 
         return carte;
@@ -169,13 +172,14 @@ public abstract class Joueur {
     }
 
     /**
-     * Pose une carte depuis la main du joueur sur une pile de la zone de jeu.
+     * Pose une carte depuis la main du joueur sur une pile de la zone de jeu
+     * d'un joueur.
      * 
      * @param numeroCarte Numéro de la carte choisie.
      * @param pile        Pile de la zone de jeu.
      */
-    private void poserCarte(int numeroCarte, Joueur joueur, Zone pile) {
-        joueur.zoneDeJeu.get(pile).push(this.main.remove(numeroCarte - 1));
+    private void poserCarte(int numeroCarte, Joueur joueur, Pile pile) {
+        joueur.getPile(pile).push(this.main.remove(numeroCarte - 1));
     }
 
     /**
@@ -192,14 +196,16 @@ public abstract class Joueur {
             // Ajouter l'étape aux km
             kmParcourus += Integer.parseInt(carte.getNom());
 
+            parler("Je joue une Étape [" + this.main.get(numeroCarte - 1) + "].\n");
+
             // S'il y a une carte météo et quelle n'a pas été résolue
-            if (!zoneDeJeu.get(Zone.METEO).isEmpty() && !estMeteoResolue) {
-                if (zoneDeJeu.get(Zone.METEO).peek().getNom()
-                        .compareTo(Carte.getCartes()[Carte.TYPE_METEO][Carte.NEIGE]) == 0) {
+            if (!getPile(Pile.METEO).isEmpty() && !estMeteoResolue) {
+                if (getPile(Pile.METEO).peek().getNom()
+                        .compareTo(Carte.getNom(Carte.TYPE_METEO, Carte.NEIGE)) == 0) {
                     kmParcourus -= 25;
                     this.main.get(numeroCarte - 1).setNom(this.main.get(numeroCarte - 1).getNom() + "(-25)");
-                } else if (zoneDeJeu.get(Zone.METEO).peek().getNom()
-                        .compareTo(Carte.getCartes()[Carte.TYPE_METEO][Carte.VENT_DOS]) == 0) {
+                } else if (getPile(Pile.METEO).peek().getNom()
+                        .compareTo(Carte.getNom(Carte.TYPE_METEO, Carte.VENT_DOS)) == 0) {
                     kmParcourus += 25;
                     this.main.get(numeroCarte - 1).setNom(this.main.get(numeroCarte - 1).getNom() + "(+25)");
                 }
@@ -207,7 +213,7 @@ public abstract class Joueur {
                 estMeteoResolue = true;
             }
 
-            poserCarte(numeroCarte, this, Zone.ETAPE);
+            poserCarte(numeroCarte, this, Pile.ETAPE);
 
             return numeroCarte;
         } else {
@@ -251,18 +257,20 @@ public abstract class Joueur {
      * @return Numéro de la carte choisie ou -1 si la carte n'est pas
      *         jouable.
      */
-    public int jouerCarteAttaque(int numeroCarte, ArrayList<Joueur> joueurs) {
+    private int jouerCarteAttaque(int numeroCarte, ArrayList<Joueur> joueurs) {
         // choisir le joueur à attaquer.
         int numeroJoueur = choisirJoueur(joueurs);
         if (peutAttaquerJoueur(this.main.get(numeroCarte - 1), joueurs.get(numeroJoueur - 1))) {
-            System.out.println(
-                    joueurs.get(numeroJoueur - 1).getNom() + " est attaquable avec " + this.main.get(numeroCarte - 1));
+
+            parler("J'attaque " + joueurs.get(numeroJoueur - 1).getNom()
+                    + " avec [" + this.main.get(numeroCarte - 1) + "].\n");
+
             // Si l'attaque est une Limite de Vitesse il faut la poser sur la pile Vitesse.
             if (this.main.get(numeroCarte - 1).getNom()
-                    .compareTo(Carte.getCartes()[Carte.TYPE_ATTAQUE][Carte.LIMITE_VITESSE]) == 0) {
-                poserCarte(numeroCarte, joueurs.get(numeroJoueur - 1), Zone.VITESSE);
+                    .compareTo(Carte.getNom(Carte.TYPE_ATTAQUE, Carte.LIMITE_VITESSE)) == 0) {
+                poserCarte(numeroCarte, joueurs.get(numeroJoueur - 1), Pile.VITESSE);
             } else {
-                poserCarte(numeroCarte, joueurs.get(numeroJoueur - 1), Zone.BATAILLE);
+                poserCarte(numeroCarte, joueurs.get(numeroJoueur - 1), Pile.BATAILLE);
             }
             return numeroCarte;
         }
@@ -281,46 +289,46 @@ public abstract class Joueur {
         // Un joueur peut attaquer s'il n'est pas déjà attaqué ET qu'il est en train de
         // roulez OU si la carte est une Limite de Vitesse
         if (!estAttaque(joueur) && peutRouler(joueur)
-                || carte.getNom().compareTo(Carte.getCartes()[Carte.TYPE_ATTAQUE][Carte.LIMITE_VITESSE]) == 0) {
+                || carte.getNom().compareTo(Carte.getNom(Carte.TYPE_ATTAQUE, Carte.LIMITE_VITESSE)) == 0) {
             // regarder si le joueur est sous limitation de vitesse.
             if (estSousLimitationVitesse(joueur)) {
                 // il ne peut pas être attaqué par une limitation de vitesse.
-                if (carte.getNom().compareTo(Carte.getCartes()[Carte.TYPE_ATTAQUE][Carte.LIMITE_VITESSE]) == 0) {
+                if (carte.getNom().compareTo(Carte.getNom(Carte.TYPE_ATTAQUE, Carte.LIMITE_VITESSE)) == 0) {
                     System.err.println("Le joueur est déjà sous Limite de Vitesse.");
                     return false;
                 }
             }
             // regarder si le joueur est protégé par une botte.
-            if (!joueur.zoneDeJeu.get(Zone.BOTTE).isEmpty()) {
+            if (!joueur.getPile(Pile.BOTTE).isEmpty()) {
                 // Si le joueur à la botte Prioritaire
-                if (joueur.zoneDeJeu.get(Zone.BOTTE).contient(Carte.getCartes()[Carte.TYPE_BOTTE][Carte.PRIORITAIRE])) {
+                if (joueur.getPile(Pile.BOTTE).contient(Carte.getNom(Carte.TYPE_BOTTE, Carte.PRIORITAIRE))) {
                     // il ne peut pas être attaqué par Feu Rouge ou Limite de Vitesse
-                    if (carte.getNom().compareTo(Carte.getCartes()[Carte.TYPE_ATTAQUE][Carte.LIMITE_VITESSE]) == 0
-                            || carte.getNom().compareTo(Carte.getCartes()[Carte.TYPE_ATTAQUE][Carte.FEU_ROUGE]) == 0) {
+                    if (carte.getNom().compareTo(Carte.getNom(Carte.TYPE_ATTAQUE, Carte.LIMITE_VITESSE)) == 0
+                            || carte.getNom().compareTo(Carte.getNom(Carte.TYPE_ATTAQUE, Carte.FEU_ROUGE)) == 0) {
                         System.err.println("Le joueur est protégé par la botte Prioritaire.");
                         return false;
                     }
                     // Si le joueur à la botte Citerne
-                } else if (joueur.zoneDeJeu.get(Zone.BOTTE)
-                        .contient(Carte.getCartes()[Carte.TYPE_BOTTE][Carte.CITERNE])) {
+                } else if (joueur.getPile(Pile.BOTTE)
+                        .contient(Carte.getNom(Carte.TYPE_BOTTE, Carte.CITERNE))) {
                     // il ne peut pas être attaqué par Panne d'Essence.
-                    if (carte.getNom().compareTo(Carte.getCartes()[Carte.TYPE_ATTAQUE][Carte.PANNE_ESSENCE]) == 0) {
+                    if (carte.getNom().compareTo(Carte.getNom(Carte.TYPE_ATTAQUE, Carte.PANNE_ESSENCE)) == 0) {
                         System.err.println("Le joueur est protégé par la botte Citerne.");
                         return false;
                     }
                     // si le joueur à la botte Increvable.
-                } else if (joueur.zoneDeJeu.get(Zone.BOTTE)
-                        .contient(Carte.getCartes()[Carte.TYPE_BOTTE][Carte.INCREVABLE])) {
+                } else if (joueur.getPile(Pile.BOTTE)
+                        .contient(Carte.getNom(Carte.TYPE_BOTTE, Carte.INCREVABLE))) {
                     // il ne peut pas être attaqué par Crevé
-                    if (carte.getNom().compareTo(Carte.getCartes()[Carte.TYPE_ATTAQUE][Carte.CREVE]) == 0) {
+                    if (carte.getNom().compareTo(Carte.getNom(Carte.TYPE_ATTAQUE, Carte.CREVE)) == 0) {
                         System.err.println("Le joueur est protégé par la botte Increvable.");
                         return false;
                     }
                     // si le joueur à la botte As du Volant
-                } else if (joueur.zoneDeJeu.get(Zone.BOTTE)
-                        .contient(Carte.getCartes()[Carte.TYPE_BOTTE][Carte.AS_VOLANT])) {
+                } else if (joueur.getPile(Pile.BOTTE)
+                        .contient(Carte.getNom(Carte.TYPE_BOTTE, Carte.AS_VOLANT))) {
                     // il ne peut pas être attaqué par Accident
-                    if (carte.getNom().compareTo(Carte.getCartes()[Carte.TYPE_ATTAQUE][Carte.ACCIDENT]) == 0) {
+                    if (carte.getNom().compareTo(Carte.getNom(Carte.TYPE_ATTAQUE, Carte.ACCIDENT)) == 0) {
                         System.err.println("Le joueur est protégé par la botte As du Volant.");
                         return false;
                     }
@@ -345,13 +353,16 @@ public abstract class Joueur {
         Carte carteParade = this.main.get(numeroCarte - 1);
 
         if (peutJouerParade(carteParade)) {
+
+            parler("Je joue [" + carteParade + "].\n");
+
             // Si la parade est une Fin de Limite de Vitesse il faut la poser sur la pile
             // Vitesse.
             if (this.main.get(numeroCarte - 1).getNom()
-                    .compareTo(Carte.getCartes()[Carte.TYPE_PARADE][Carte.FIN_LIMITE_VITESSE]) == 0) {
-                poserCarte(numeroCarte, this, Zone.VITESSE);
+                    .compareTo(Carte.getNom(Carte.TYPE_PARADE, Carte.FIN_LIMITE_VITESSE)) == 0) {
+                poserCarte(numeroCarte, this, Pile.VITESSE);
             } else {
-                poserCarte(numeroCarte, this, Zone.BATAILLE);
+                poserCarte(numeroCarte, this, Pile.BATAILLE);
             }
             return numeroCarte;
         }
@@ -366,11 +377,11 @@ public abstract class Joueur {
      */
     public boolean peutJouerParade(Carte carteParade) {
         // Cas ou la carte parade est un Feu Vert.
-        if (carteParade.getNom().compareTo(Carte.getCartes()[Carte.TYPE_PARADE][Carte.FEU_VERT]) == 0) {
+        if (carteParade.getNom().compareTo(Carte.getNom(Carte.TYPE_PARADE, Carte.FEU_VERT)) == 0) {
             // Si la pile Bataille est vide
             // OU le joueur est attaqué par une attaque Feu Rouge
             // OU le joueur ne peut pas roulez ET qu'il n'est pas attaqué.
-            if (this.zoneDeJeu.get(Zone.BATAILLE).isEmpty()
+            if (this.getPile(Pile.BATAILLE).isEmpty()
                     || this.estAttaquePar(Carte.FEU_ROUGE)
                     || (!peutRouler(this) && !estAttaque(this))) {
                 return true;
@@ -380,7 +391,7 @@ public abstract class Joueur {
         // Si le joueur est attaqué par une attaque Limite de Vitesse.
         if (this.estAttaquePar(Carte.LIMITE_VITESSE)) {
             // Si la carte parade est la carte Fin Limite de Vitesse.
-            if (carteParade.getNom().compareTo(Carte.getCartes()[Carte.TYPE_PARADE][Carte.FIN_LIMITE_VITESSE]) == 0) {
+            if (carteParade.getNom().compareTo(Carte.getNom(Carte.TYPE_PARADE, Carte.FIN_LIMITE_VITESSE)) == 0) {
                 // Il peut jouer la carte.
                 return true;
             }
@@ -389,7 +400,7 @@ public abstract class Joueur {
         // Si le joueur est attaqué par une attaque Panne d'Essence.
         if (this.estAttaquePar(Carte.PANNE_ESSENCE)) {
             // Si la carte parade est la carte Essence.
-            if (carteParade.getNom().compareTo(Carte.getCartes()[Carte.TYPE_PARADE][Carte.ESSENCE]) == 0) {
+            if (carteParade.getNom().compareTo(Carte.getNom(Carte.TYPE_PARADE, Carte.ESSENCE)) == 0) {
                 // Il peut jouer la carte.
                 return true;
             }
@@ -398,7 +409,7 @@ public abstract class Joueur {
         // Si le joueur est attaqué par une attaque Crevé.
         if (this.estAttaquePar(Carte.CREVE)) {
             // Si la carte parade est une Roue de Secours.
-            if (carteParade.getNom().compareTo(Carte.getCartes()[Carte.TYPE_PARADE][Carte.ROUE_SECOURS]) == 0) {
+            if (carteParade.getNom().compareTo(Carte.getNom(Carte.TYPE_PARADE, Carte.ROUE_SECOURS)) == 0) {
                 // Il peut jouer la carte.
                 return true;
             }
@@ -407,7 +418,7 @@ public abstract class Joueur {
         // Si le joueur est attaqué par une attaque Accident.
         if (this.estAttaquePar(Carte.ACCIDENT)) {
             // Si la carte parade est une Roue de Secours.
-            if (carteParade.getNom().compareTo(Carte.getCartes()[Carte.TYPE_PARADE][Carte.REPARATION]) == 0) {
+            if (carteParade.getNom().compareTo(Carte.getNom(Carte.TYPE_PARADE, Carte.REPARATION)) == 0) {
                 // Il peut jouer la carte.
                 return true;
             }
@@ -426,12 +437,12 @@ public abstract class Joueur {
      * @return true si le joueur est attaqué, false si non.
      */
     private boolean estAttaque(Joueur joueur) {
-        Boolean estAttaque = !joueur.getZoneDeJeu().get(Zone.BATAILLE).isEmpty()
-                && joueur.getZoneDeJeu().get(Zone.BATAILLE).peek().getType() == Carte.TYPE_ATTAQUE;
+        Boolean estAttaque = !joueur.getZoneDeJeu().get(Pile.BATAILLE).isEmpty()
+                && joueur.getZoneDeJeu().get(Pile.BATAILLE).peek().getType() == Carte.TYPE_ATTAQUE;
 
         if (estAttaque) {
             System.err.println(joueur.getNom() + "est déjà attaqué(e) avec "
-                    + joueur.getZoneDeJeu().get(Zone.BATAILLE).peek());
+                    + joueur.getZoneDeJeu().get(Pile.BATAILLE).peek());
         }
 
         return estAttaque;
@@ -439,22 +450,21 @@ public abstract class Joueur {
 
     /**
      * Permet de savoir si le joueur est attaqué par une carte attaque d'après
-     * son indice dans le tableau Carte.getCartes().
+     * son indice dans le tableau Carte.getNom(
+     * , * @param)indiceCarteAttaque Indice de la carte attaque.
      * 
-     * @param indiceCarteAttaque Indice de la carte attaque.
      * @return true si le joueur est attaqué par la carte, false si non.
      */
     private boolean estAttaquePar(int indiceCarteAttaque) {
-        String nomCarteAttaque = Carte.getCartes()[Carte.TYPE_ATTAQUE][indiceCarteAttaque];
-
-        if (!this.getZoneDeJeu().get(Zone.BATAILLE).isEmpty()) {
-            if (this.zoneDeJeu.get(Zone.BATAILLE).peek().getNom().compareTo(nomCarteAttaque) == 0) {
+        String nomCarteAttaque = Carte.getNom(Carte.TYPE_ATTAQUE, indiceCarteAttaque);
+        if (!this.getZoneDeJeu().get(Pile.BATAILLE).isEmpty()) {
+            if (this.getPile(Pile.BATAILLE).peek().getNom().compareTo(nomCarteAttaque) == 0) {
                 return true;
             }
         }
 
-        if (!this.getZoneDeJeu().get(Zone.VITESSE).isEmpty()) {
-            if (this.zoneDeJeu.get(Zone.VITESSE).peek().getNom().compareTo(nomCarteAttaque) == 0) {
+        if (!this.getZoneDeJeu().get(Pile.VITESSE).isEmpty()) {
+            if (this.getPile(Pile.VITESSE).peek().getNom().compareTo(nomCarteAttaque) == 0) {
                 return true;
             }
         }
@@ -469,11 +479,11 @@ public abstract class Joueur {
      * @return true si le joueur peut rouler, false si non.
      */
     private boolean peutRouler(Joueur joueur) {
-        boolean possedeFeuVert = !joueur.getZoneDeJeu().get(Zone.BATAILLE).isEmpty()
-                && joueur.getZoneDeJeu().get(Zone.BATAILLE).peek().getNom()
-                        .compareTo(Carte.getCartes()[Carte.TYPE_PARADE][Carte.FEU_VERT]) == 0;
-        boolean possedePrioritaire = joueur.getZoneDeJeu().get(Zone.BOTTE)
-                .contient(Carte.getCartes()[Carte.TYPE_BOTTE][Carte.PRIORITAIRE]);
+        boolean possedeFeuVert = !joueur.getZoneDeJeu().get(Pile.BATAILLE).isEmpty()
+                && joueur.getZoneDeJeu().get(Pile.BATAILLE).peek().getNom()
+                        .compareTo(Carte.getNom(Carte.TYPE_PARADE, Carte.FEU_VERT)) == 0;
+        boolean possedePrioritaire = joueur.getZoneDeJeu().get(Pile.BOTTE)
+                .contient(Carte.getNom(Carte.TYPE_BOTTE, Carte.PRIORITAIRE));
 
         return !estAttaque(joueur) && (possedeFeuVert || possedePrioritaire);
     }
@@ -485,8 +495,8 @@ public abstract class Joueur {
      * @return true si le joueur est sous Limite de Vitesse, false si non.
      */
     private boolean estSousLimitationVitesse(Joueur joueur) {
-        return !joueur.getZoneDeJeu().get(Zone.VITESSE).isEmpty() && joueur.getZoneDeJeu().get(Zone.VITESSE).peek()
-                .getNom().compareTo(Carte.getCartes()[Carte.TYPE_ATTAQUE][Carte.LIMITE_VITESSE]) == 0;
+        return !joueur.getZoneDeJeu().get(Pile.VITESSE).isEmpty() && joueur.getZoneDeJeu().get(Pile.VITESSE).peek()
+                .getNom().compareTo(Carte.getNom(Carte.TYPE_ATTAQUE, Carte.LIMITE_VITESSE)) == 0;
     }
 
     /**
@@ -496,8 +506,8 @@ public abstract class Joueur {
      * @return true si possible, false si non.
      */
     private boolean peutJouerEtape200() {
-        return this.getZoneDeJeu().get(Zone.ETAPE)
-                .nombreCartes(Carte.getCartes()[Carte.TYPE_ETAPE][Carte.ETAPE_200]) < 2;
+        return this.getZoneDeJeu().get(Pile.ETAPE)
+                .nombreCartes(Carte.getNom(Carte.TYPE_ETAPE, Carte.ETAPE_200)) < 2;
     }
 
     public int getId() {
@@ -536,11 +546,11 @@ public abstract class Joueur {
         return main;
     }
 
-    public EnumMap<Zone, PileCartes> getZoneDeJeu() {
+    public EnumMap<Pile, PileCartes> getZoneDeJeu() {
         return zoneDeJeu;
     }
 
-    public PileCartes getPile(Zone pile) {
+    public PileCartes getPile(Pile pile) {
         return this.zoneDeJeu.get(pile);
     }
 
@@ -562,10 +572,10 @@ public abstract class Joueur {
      * 
      * @return La zone de jeu initialisée.
      */
-    private EnumMap<Zone, PileCartes> initialiseZoneDeJeu() {
-        EnumMap<Zone, PileCartes> result = new EnumMap<Zone, PileCartes>(Zone.class);
+    private EnumMap<Pile, PileCartes> initialiseZoneDeJeu() {
+        EnumMap<Pile, PileCartes> result = new EnumMap<Pile, PileCartes>(Pile.class);
 
-        for (Zone z : Zone.values()) {
+        for (Pile z : Pile.values()) {
             result.put(z, new PileCartes());
         }
 

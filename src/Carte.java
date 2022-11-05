@@ -112,6 +112,10 @@ public class Carte {
         this.nom = nom;
     }
 
+    public static String getNom(int type, int indiceCarte) {
+        return Carte.getCartes()[type][indiceCarte];
+    }
+
     public int getType() {
         return type;
     }

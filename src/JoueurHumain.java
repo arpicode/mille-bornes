@@ -17,19 +17,17 @@ public class JoueurHumain extends Joueur {
     /**
      * Lance le déroulement d'un tour de jeu du joueur.
      */
-    public void jouerTour(ArrayList<Joueur> joueurs, Pioche pioche, Pioche piocheMeteo, Defausse defausse) {
+    public boolean jouerTour(ArrayList<Joueur> joueurs, Pioche pioche, Pioche piocheMeteo, Defausse defausse) {
+        boolean aPasseTour = false;
         // Piocher une carte dans la pioche normale
-        if (this.piocherCarte(pioche) != null) {
-            this.parler("Je pioche une carte.\n");
-        } else {
-            this.parler("La pioche est vide, pas de carte pour moi :(\n");
-        }
+        this.piocherCarte(pioche);
 
-        Affichage.mainJoueur(this);
+        // Afficher la main du joueur
+        this.regarderMain();
 
         // Piocher une carte météo si applicable (kmParcourus >= 500 et qu'on a pas déjà
         // une carte météo)
-        if (this.getKmParcourus() >= 500 && this.getZoneDeJeu().get(Zone.METEO).size() < 1) {
+        if (this.getKmParcourus() >= 500 && this.getZoneDeJeu().get(Pile.METEO).size() < 1) {
             Carte carteMeteo = this.piocherCarteMeteo(piocheMeteo);
             if (carteMeteo != null) {
                 this.parler("Je pioche une carte Météo : [" + carteMeteo + "].\n");
@@ -49,6 +47,7 @@ public class JoueurHumain extends Joueur {
                 // Traitement de l'action : 2 Passer.
                 if (action == 2) {
                     this.passerTour(defausse);
+                    aPasseTour = true;
                     tourFini = true;
                 } else if (action == 1) {
                     // Traitement de l'action : 1 Jouer une carte.
@@ -63,7 +62,7 @@ public class JoueurHumain extends Joueur {
             // Le joueur n'a pas de cartes en main et doit passer son tour.
             this.parler("Je n'ai plus de cartes, je passe mon tour.");
         }
-
+        return aPasseTour;
     }
 
     public int choisirAction() {
@@ -152,6 +151,14 @@ public class JoueurHumain extends Joueur {
         } else {
             System.out.println();
         }
+    }
+
+    private void regarderMain() {
+        parler("Je regarde ma main...\n");
+        for (int i = 0; i < this.getMain().size(); i++) {
+            System.out.print((i + 1) + "-" + "[" + this.getMain().get(i) + "] ");
+        }
+        System.out.println("\n");
     }
 
 }

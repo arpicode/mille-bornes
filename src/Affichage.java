@@ -168,15 +168,15 @@ public class Affichage {
         System.out.println(Color.YELLOW + " : " + Color.END);
 
         // Afficher la zone VITESSE
-        affichePile(joueur, "Vitesse  ", Joueur.Zone.VITESSE);
+        affichePile(joueur, "Vitesse  ", Joueur.Pile.VITESSE);
         // Afficher la zone BATTAILLE
-        affichePile(joueur, "Battaille", Joueur.Zone.BATAILLE);
+        affichePile(joueur, "Battaille", Joueur.Pile.BATAILLE);
         // Afficher la zone BOTTE
-        affichePile(joueur, "Botte    ", Joueur.Zone.BOTTE);
+        affichePile(joueur, "Botte    ", Joueur.Pile.BOTTE);
         // Afficher la zone METEO
-        affichePile(joueur, "Météo    ", Joueur.Zone.METEO);
+        affichePile(joueur, "Météo    ", Joueur.Pile.METEO);
         // Afficher la zone BATTAILLE
-        affichePile(joueur, "Étape    ", Joueur.Zone.ETAPE);
+        affichePile(joueur, "Étape    ", Joueur.Pile.ETAPE);
         System.out.println();
     }
 
@@ -187,7 +187,7 @@ public class Affichage {
      * @param pile   nom de la pile
      * @param zone   type de zone de la pile
      */
-    private static void affichePile(Joueur joueur, String pile, Joueur.Zone zone) {
+    private static void affichePile(Joueur joueur, String pile, Joueur.Pile zone) {
         System.out.print("  " + pile + " : ");
         for (Carte carte : joueur.getZoneDeJeu().get(zone)) {
             System.out.print("[" + carte + "]");

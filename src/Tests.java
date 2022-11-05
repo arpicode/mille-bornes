@@ -86,7 +86,7 @@ public class Tests {
         afficheTest("Lea ne doit pas pouvoir jouer une étape 100", !lea.peutJouerEtape(etape100));
         afficheTest("Lea ne doit pas pouvoir jouer une étape 200", !lea.peutJouerEtape(etape200));
 
-        lea.getPile(Joueur.Zone.BATAILLE).push(new Carte(Carte.TYPE_PARADE, Carte.FEU_VERT));
+        lea.getPile(Joueur.Pile.BATAILLE).push(new Carte(Carte.TYPE_PARADE, Carte.FEU_VERT));
         System.out.println();
         System.out.println(lea);
         afficheTest("Lea doit pouvoir jouer une étape 25", lea.peutJouerEtape(etape25));
@@ -95,7 +95,7 @@ public class Tests {
         afficheTest("Lea doit pouvoir jouer une étape 100", lea.peutJouerEtape(etape100));
         afficheTest("Lea doit pouvoir jouer une étape 200", lea.peutJouerEtape(etape200));
 
-        lea.getPile(Joueur.Zone.VITESSE).push(new Carte(Carte.TYPE_ATTAQUE, Carte.LIMITE_VITESSE));
+        lea.getPile(Joueur.Pile.VITESSE).push(new Carte(Carte.TYPE_ATTAQUE, Carte.LIMITE_VITESSE));
         System.out.println();
         System.out.println(lea);
         afficheTest("Lea doit pouvoir jouer une étape 25", lea.peutJouerEtape(etape25));
@@ -104,7 +104,7 @@ public class Tests {
         afficheTest("Lea ne doit pas pouvoir jouer une étape 100", !lea.peutJouerEtape(etape100));
         afficheTest("Lea ne doit pas pouvoir jouer une étape 200", !lea.peutJouerEtape(etape200));
 
-        lea.getPile(Joueur.Zone.BATAILLE).push(new Carte(Carte.TYPE_ATTAQUE, Carte.PANNE_ESSENCE));
+        lea.getPile(Joueur.Pile.BATAILLE).push(new Carte(Carte.TYPE_ATTAQUE, Carte.PANNE_ESSENCE));
         System.out.println();
         System.out.println(lea);
         afficheTest("Lea ne doit pas pouvoir jouer une étape 25", !lea.peutJouerEtape(etape25));
@@ -116,17 +116,17 @@ public class Tests {
         afficheTest("Lea doit pouvoir jouer une Fin de Limite de Vitesse", lea.peutJouerParade(finLimiteVitesse));
         afficheTest("Lea doit pouvoir jouer une Essence", lea.peutJouerParade(essence));
 
-        lea.getPile(Joueur.Zone.VITESSE).pop();
-        lea.getPile(Joueur.Zone.BATAILLE).pop();
-        lea.getPile(Joueur.Zone.BOTTE).push(new Carte(Carte.TYPE_BOTTE, Carte.CITERNE));
+        lea.getPile(Joueur.Pile.VITESSE).pop();
+        lea.getPile(Joueur.Pile.BATAILLE).pop();
+        lea.getPile(Joueur.Pile.BOTTE).push(new Carte(Carte.TYPE_BOTTE, Carte.CITERNE));
         System.out.println();
         System.out.println(lea);
         afficheTest("Nicolas ne doit pas pouvoir jouer Panne d'Essence sur Lea",
                 !nicolas.peutAttaquerJoueur(panneEssence, lea));
 
-        lea.getPile(Joueur.Zone.BATAILLE).pop();
-        lea.getPile(Joueur.Zone.BOTTE).pop();
-        lea.getPile(Joueur.Zone.BOTTE).push(new Carte(Carte.TYPE_BOTTE, Carte.PRIORITAIRE));
+        lea.getPile(Joueur.Pile.BATAILLE).pop();
+        lea.getPile(Joueur.Pile.BOTTE).pop();
+        lea.getPile(Joueur.Pile.BOTTE).push(new Carte(Carte.TYPE_BOTTE, Carte.PRIORITAIRE));
         System.out.println();
         System.out.println(lea);
         afficheTest("Lea doit pouvoir jouer une étape 100", lea.peutJouerEtape(etape100));

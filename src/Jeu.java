@@ -37,42 +37,64 @@ public class Jeu {
      * Démarre la partie de Mille Bornes.
      */
     public void demarrer() {
+        boolean aPasseTour;
+        int passeConsecutifs = 0;
+
         this.distribuerCartes();
 
         // this.afficherDonnees(); // Affiche l'état actuel du jeu pour débugger
 
         // Boucle de jeu
-        // int i = 0;
         while (!this.estTermine) {
             // Annoncer le tour du joueur
             Affichage.annoncerJoueur(joueurs.get(this.idJoueurCourant));
+
+            if (joueurs.get(this.idJoueurCourant) instanceof JoueurHumain) {
+                System.out.println(joueurs.get(this.idJoueurCourant).getNom()
+                        + ", appuie ENTRER pour commencer ton tour...");
+                System.console().readLine();
+            }
+
+            System.err.print("Pioche: " + pioche.size());
+            for (Joueur j : joueurs) {
+                System.err.print(" " + j.getNom() + "(" + j.getKmParcourus() + ")");
+            }
+            System.err.println();
             // Afficher les zones de jeu des joueurs
             for (Joueur joueur : joueurs) {
                 Affichage.zoneDeJeu(joueur, this.idJoueurCourant);
             }
 
-            // Afficher la main du joueur courant
-            // Affichage.mainJoueur(joueurs.get(this.idJoueurCourant));
-
             // Donner la main au joueur courant
-            joueurs.get(this.idJoueurCourant).jouerTour(joueurs, pioche, piocheMeteo, defausse);
+            aPasseTour = joueurs.get(this.idJoueurCourant).jouerTour(joueurs, pioche, piocheMeteo, defausse);
+            if (aPasseTour) {
+                passeConsecutifs++;
+            } else {
+                passeConsecutifs = 0;
+            }
 
             // Le joueur a fini son tour, regarder si il a atteind les 1000 Bornes
             if (joueurs.get(this.idJoueurCourant).getKmParcourus() > 1000) {
                 estTermine = true;
-                // TODO afficher le gagnant.
             } else {
-                // Passer au joueur suivant.
-                this.idJoueurCourant = (this.idJoueurCourant + 1) % nbJoueurs;
+                // Si il n'y a plus de carte dans la pioche ET que tout le monde a passé son
+                // tour
+                if (this.pioche.size() == 0 && passeConsecutifs == nbJoueurs) {
+                    estTermine = true;
+                } else {
+                    System.out.println(joueurs.get(this.idJoueurCourant).getNom()
+                            + ", appuie sur ENTRER pour passer la main...");
+                    System.console().readLine();
 
-                // if (++i >= 5) // on s'arrête à 5 tours pour tester
-                // estTermine = true;
+                    // Passer au joueur suivant.
+                    this.idJoueurCourant = (this.idJoueurCourant + 1) % nbJoueurs;
 
-                System.out.println("Au joueur suivant. Appuyer sur ENTRER pour continuer...");
-                System.console().readLine();
+                }
             }
 
         }
+        // TODO afficher le gagnant.
+        System.out.println("TODO... afficher la fin de jeu (gagnant, scores...)");
 
     }
 
