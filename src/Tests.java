@@ -64,6 +64,8 @@ public class Tests {
         Carte etape100 = new Carte(Carte.TYPE_ETAPE, Carte.ETAPE_100);
         Carte etape200 = new Carte(Carte.TYPE_ETAPE, Carte.ETAPE_200);
 
+        System.out.println();
+        System.out.println(lea);
         afficheTest("Nicolas doit pouvoir jouer Feu Vert",
                 nicolas.peutJouerParade(feuVert));
 
@@ -95,6 +97,8 @@ public class Tests {
         afficheTest("Lea doit pouvoir jouer une étape 100", lea.peutJouerEtape(etape100));
         afficheTest("Lea doit pouvoir jouer une étape 200", lea.peutJouerEtape(etape200));
 
+        afficheTest("Lea ne doit pas pouvoir jouer une Fin de Limite de Vitesse",
+                !lea.peutJouerParade(finLimiteVitesse));
         lea.getPile(Joueur.Pile.VITESSE).push(new Carte(Carte.TYPE_ATTAQUE, Carte.LIMITE_VITESSE));
         System.out.println();
         System.out.println(lea);
