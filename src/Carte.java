@@ -10,6 +10,7 @@ public class Carte {
     public static final int TYPE_BOTTE = 3;
     public static final int TYPE_METEO = 4;
 
+    // Indice des cartes
     public static final int ETAPE_25 = 0;
     public static final int ETAPE_50 = 1;
     public static final int ETAPE_75 = 2;
@@ -64,6 +65,11 @@ public class Carte {
 
     public Carte(String nom) {
         initialiserCarte(nom);
+    }
+
+    public Carte(int type, int indiceCarte) {
+        this.type = type;
+        this.nom = Carte.getCartes()[type][indiceCarte];
     }
 
     /**

@@ -7,11 +7,11 @@ public class Tests {
         Carte carte2 = new Carte("50");
         Carte carte3 = new Carte("roue de secours");
 
-        System.out.println("carte1 devrait être non null : " + (carte1 != null));
-        System.out.println("carte1 devrait être une carte non valide : " + (!carte1.estValide()));
+        afficheTest("carte1 devrait être non null", (carte1 != null));
+        afficheTest("carte1 devrait être une carte non valide", (!carte1.estValide()));
 
         System.out.println("carte2 devrait être églal à 50 : " + carte2.toString());
-        System.out.println("carte2 devrait être une carte valide : " + (carte2.estValide()));
+        afficheTest("carte2 devrait être une carte valide", (carte2.estValide()));
 
         System.out.println("carte3 devrait être églal à Roue de Secours : " + carte3.toString());
     }
@@ -35,12 +35,116 @@ public class Tests {
 
     public static void testConfiguration() {
         ArrayList<String> ligneCartes1 = Configuration.parse("config.txt");
-        System.out.println("config.txt devrait avoir 22 lignes de cartes : " + (ligneCartes1.size() == 22));
+        afficheTest("config.txt devrait avoir 22 lignes de cartes", (ligneCartes1.size() == 22));
 
         ArrayList<String> ligneCartes2 = Configuration.parse("testFiles/config_test2.txt");
-        System.out.println("config_test2.txt devrait avoir 7 lignes de cartes : " + (ligneCartes2.size() == 7));
+        afficheTest("config_test2.txt devrait avoir 7 lignes de cartes", (ligneCartes2.size() == 7));
         System.out.println("Lignes trouvées dans config_test2.txt");
         System.out.println(ligneCartes2);
+    }
+
+    public static void testJoueur() {
+        Joueur nicolas = new JoueurHumain("Nicolas", 40);
+        Joueur lea = new JoueurHumain("Lea", 12);
+        // Joueur tom = new JoueurHumain("Tom", 13);
+
+        Carte feuVert = new Carte(Carte.TYPE_PARADE, Carte.FEU_VERT);
+        Carte finLimiteVitesse = new Carte(Carte.TYPE_PARADE, Carte.FIN_LIMITE_VITESSE);
+        Carte essence = new Carte(Carte.TYPE_PARADE, Carte.ESSENCE);
+
+        Carte limiteVitesse = new Carte(Carte.TYPE_ATTAQUE, Carte.LIMITE_VITESSE);
+        Carte feuRouge = new Carte(Carte.TYPE_ATTAQUE, Carte.FEU_ROUGE);
+        Carte panneEssence = new Carte(Carte.TYPE_ATTAQUE, Carte.PANNE_ESSENCE);
+        Carte creve = new Carte(Carte.TYPE_ATTAQUE, Carte.CREVE);
+        Carte accident = new Carte(Carte.TYPE_ATTAQUE, Carte.ACCIDENT);
+
+        Carte etape25 = new Carte(Carte.TYPE_ETAPE, Carte.ETAPE_25);
+        Carte etape50 = new Carte(Carte.TYPE_ETAPE, Carte.ETAPE_50);
+        Carte etape75 = new Carte(Carte.TYPE_ETAPE, Carte.ETAPE_75);
+        Carte etape100 = new Carte(Carte.TYPE_ETAPE, Carte.ETAPE_100);
+        Carte etape200 = new Carte(Carte.TYPE_ETAPE, Carte.ETAPE_200);
+
+        afficheTest("Nicolas doit pouvoir jouer Feu Vert",
+                nicolas.peutJouerParade(feuVert));
+
+        afficheTest("Nicolas doit pouvoir jouer Limite de Vitesse sur Lea",
+                nicolas.peutAttaquerJoueur(limiteVitesse, lea));
+        afficheTest("Nicolas ne doit pas pouvoir jouer Feu Rouge sur Lea",
+                !nicolas.peutAttaquerJoueur(feuRouge, lea));
+        afficheTest("Nicolas ne doit pas pouvoir jouer Panne d'Essence sur Lea",
+                !nicolas.peutAttaquerJoueur(panneEssence, lea));
+        afficheTest("Nicolas ne doit pas pouvoir jouer Crevé sur Lea",
+                !nicolas.peutAttaquerJoueur(creve, lea));
+        afficheTest("Nicolas ne doit pas pouvoir jouer Accident sur Lea",
+                !nicolas.peutAttaquerJoueur(accident, lea));
+
+        System.out.println();
+        System.out.println(lea);
+        afficheTest("Lea ne doit pas pouvoir jouer une étape 25", !lea.peutJouerEtape(etape25));
+        afficheTest("Lea ne doit pas pouvoir jouer une étape 50", !lea.peutJouerEtape(etape50));
+        afficheTest("Lea ne doit pas pouvoir jouer une étape 75", !lea.peutJouerEtape(etape75));
+        afficheTest("Lea ne doit pas pouvoir jouer une étape 100", !lea.peutJouerEtape(etape100));
+        afficheTest("Lea ne doit pas pouvoir jouer une étape 200", !lea.peutJouerEtape(etape200));
+
+        lea.getPile(Joueur.Zone.BATAILLE).push(new Carte(Carte.TYPE_PARADE, Carte.FEU_VERT));
+        System.out.println();
+        System.out.println(lea);
+        afficheTest("Lea doit pouvoir jouer une étape 25", lea.peutJouerEtape(etape25));
+        afficheTest("Lea doit pouvoir jouer une étape 50", lea.peutJouerEtape(etape50));
+        afficheTest("Lea doit pouvoir jouer une étape 75", lea.peutJouerEtape(etape75));
+        afficheTest("Lea doit pouvoir jouer une étape 100", lea.peutJouerEtape(etape100));
+        afficheTest("Lea doit pouvoir jouer une étape 200", lea.peutJouerEtape(etape200));
+
+        lea.getPile(Joueur.Zone.VITESSE).push(new Carte(Carte.TYPE_ATTAQUE, Carte.LIMITE_VITESSE));
+        System.out.println();
+        System.out.println(lea);
+        afficheTest("Lea doit pouvoir jouer une étape 25", lea.peutJouerEtape(etape25));
+        afficheTest("Lea doit pouvoir jouer une étape 50", lea.peutJouerEtape(etape50));
+        afficheTest("Lea ne doit pas pouvoir jouer une étape 75", !lea.peutJouerEtape(etape75));
+        afficheTest("Lea ne doit pas pouvoir jouer une étape 100", !lea.peutJouerEtape(etape100));
+        afficheTest("Lea ne doit pas pouvoir jouer une étape 200", !lea.peutJouerEtape(etape200));
+
+        lea.getPile(Joueur.Zone.BATAILLE).push(new Carte(Carte.TYPE_ATTAQUE, Carte.PANNE_ESSENCE));
+        System.out.println();
+        System.out.println(lea);
+        afficheTest("Lea ne doit pas pouvoir jouer une étape 25", !lea.peutJouerEtape(etape25));
+        afficheTest("Lea ne doit pas pouvoir jouer une étape 50", !lea.peutJouerEtape(etape50));
+        afficheTest("Lea ne doit pas pouvoir jouer une étape 75", !lea.peutJouerEtape(etape75));
+        afficheTest("Lea ne doit pas pouvoir jouer une étape 100", !lea.peutJouerEtape(etape100));
+        afficheTest("Lea ne doit pas pouvoir jouer une étape 200", !lea.peutJouerEtape(etape200));
+
+        afficheTest("Lea doit pouvoir jouer une Fin de Limite de Vitesse", lea.peutJouerParade(finLimiteVitesse));
+        afficheTest("Lea doit pouvoir jouer une Essence", lea.peutJouerParade(essence));
+
+        lea.getPile(Joueur.Zone.VITESSE).pop();
+        lea.getPile(Joueur.Zone.BATAILLE).pop();
+        lea.getPile(Joueur.Zone.BOTTE).push(new Carte(Carte.TYPE_BOTTE, Carte.CITERNE));
+        System.out.println();
+        System.out.println(lea);
+        afficheTest("Nicolas ne doit pas pouvoir jouer Panne d'Essence sur Lea",
+                !nicolas.peutAttaquerJoueur(panneEssence, lea));
+
+        lea.getPile(Joueur.Zone.BATAILLE).pop();
+        lea.getPile(Joueur.Zone.BOTTE).pop();
+        lea.getPile(Joueur.Zone.BOTTE).push(new Carte(Carte.TYPE_BOTTE, Carte.PRIORITAIRE));
+        System.out.println();
+        System.out.println(lea);
+        afficheTest("Lea doit pouvoir jouer une étape 100", lea.peutJouerEtape(etape100));
+        afficheTest("Lea ne doit pas pouvoir jouer Feu Vert", lea.peutJouerParade(feuVert));
+
+        afficheTest("Nicolas ne doit pas pouvoir jouer Limite de Vitesse sur Lea",
+                !nicolas.peutAttaquerJoueur(limiteVitesse, lea));
+        afficheTest("Nicolas ne doit pas pouvoir jouer Feu Rouge sur Lea",
+                !nicolas.peutAttaquerJoueur(feuRouge, lea));
+    }
+
+    private static void afficheTest(String message, boolean test) {
+        System.out.print(Affichage.Color.BOLD + message + Affichage.Color.END);
+        if (test) {
+            System.out.println(" : " + Affichage.Color.GREEN + test + Affichage.Color.END);
+        } else {
+            System.out.println(" : " + Affichage.Color.RED + test + Affichage.Color.END);
+        }
     }
 
     public static void main(String[] args) {
@@ -60,6 +164,12 @@ public class Tests {
         System.out.println("Tests de la classe Configuration");
         System.out.println("--------------------------------");
         testConfiguration();
+        System.out.println();
+
+        System.out.println("--------------------------------");
+        System.out.println("Tests de la classe Joueur");
+        System.out.println("--------------------------------");
+        testJoueur();
         System.out.println();
 
     }
