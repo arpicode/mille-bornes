@@ -38,7 +38,7 @@ public class Jeu {
      */
     public void demarrer() {
         boolean aPasseTour;
-        int passeConsecutifs = 0;
+        int toursPassesConsecutifs = 0;
 
         this.distribuerCartes();
 
@@ -68,32 +68,37 @@ public class Jeu {
             // Donner la main au joueur courant
             aPasseTour = joueurs.get(this.idJoueurCourant).jouerTour(joueurs, pioche, piocheMeteo, defausse);
             if (aPasseTour) {
-                passeConsecutifs++;
+                toursPassesConsecutifs++;
             } else {
-                passeConsecutifs = 0;
+                toursPassesConsecutifs = 0;
             }
-
+            System.out.println(toursPassesConsecutifs);
             // Le joueur a fini son tour, regarder si il a atteind les 1000 Bornes
             if (joueurs.get(this.idJoueurCourant).getKmParcourus() > 1000) {
                 estTermine = true;
             } else {
                 // Si il n'y a plus de carte dans la pioche ET que tout le monde a passé son
                 // tour
-                if (this.pioche.size() == 0 && passeConsecutifs == nbJoueurs) {
+                if (this.pioche.size() == 0 && toursPassesConsecutifs == nbJoueurs) {
                     estTermine = true;
                 } else {
-                    System.out.println(joueurs.get(this.idJoueurCourant).getNom()
-                            + ", appuie sur ENTRER pour passer la main...");
-                    System.console().readLine();
+                    if (joueurs.get(this.idJoueurCourant) instanceof JoueurHumain) {
+                        System.out.println(joueurs.get(this.idJoueurCourant).getNom()
+                                + ", appuie sur ENTRER pour passer la main...");
+                        System.console().readLine();
+                    }
 
                     // Passer au joueur suivant.
                     this.idJoueurCourant = (this.idJoueurCourant + 1) % nbJoueurs;
-
                 }
             }
 
         }
-        // TODO afficher le gagnant.
+
+        if (this.pioche.size() == 0 && toursPassesConsecutifs >= nbJoueurs) {
+            System.out.println("Tout le monde a passé son tour, la partie est terminée !");
+        }
+
         System.out.println("TODO... afficher la fin de jeu (gagnant, scores...)");
 
     }
@@ -104,6 +109,14 @@ public class Jeu {
     private boolean initialiser() {
         boolean estInitialise = true;
         this.nbJoueurs = Affichage.saisieNombreJoueurs();
+
+        /*
+         * TODO si on implémente le JoueurOrdinateur on demande ici si le joueur
+         * veut joueur contre des ordi. Si oui il sera seul et il y aura
+         * (nbJoueurs - 1) ordinateurs. Il faudra modifier l'initialisation des
+         * joueurs en conséquence. Le nom et age des ordi pourrais être générés
+         * aléatoirement.
+         */
 
         // Initialiser les joueurs.
         for (int i = 0; i < this.nbJoueurs; i++) {

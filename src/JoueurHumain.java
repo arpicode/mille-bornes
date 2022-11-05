@@ -14,9 +14,6 @@ public class JoueurHumain extends Joueur {
         this.setAge(age);
     }
 
-    /**
-     * Lance le déroulement d'un tour de jeu du joueur.
-     */
     public boolean jouerTour(ArrayList<Joueur> joueurs, Pioche pioche, Pioche piocheMeteo, Defausse defausse) {
         boolean aPasseTour = false;
         // Piocher une carte dans la pioche normale
@@ -38,7 +35,7 @@ public class JoueurHumain extends Joueur {
 
         // Si le joueur à au moins une carte en main
         if (this.getMain().size() > 0) {
-            boolean tourFini = false;
+            boolean estTourTermine = false;
 
             do {
                 // Choisir une action : 1 jouer une carte, 2 passer.
@@ -48,16 +45,16 @@ public class JoueurHumain extends Joueur {
                 if (action == 2) {
                     this.passerTour(defausse);
                     aPasseTour = true;
-                    tourFini = true;
+                    estTourTermine = true;
                 } else if (action == 1) {
                     // Traitement de l'action : 1 Jouer une carte.
-                    int numeroCarteJouee = jouerCarte(choisirCarte(), joueurs);
+                    int numeroCarteJouee = jouerCarte(choisirCarte(), joueurs, defausse);
 
                     if (numeroCarteJouee != -1) {
-                        tourFini = true;
+                        estTourTermine = true;
                     }
                 }
-            } while (!tourFini);
+            } while (!estTourTermine);
         } else {
             // Le joueur n'a pas de cartes en main et doit passer son tour.
             this.parler("Je n'ai plus de cartes, je passe mon tour.");
@@ -92,7 +89,6 @@ public class JoueurHumain extends Joueur {
             String regex = "^\\s*[1-" + this.getMain().size() + "]\\s*$";
 
             do {
-                this.parler("Je choisis la carte n° ");
                 input = System.console().readLine();
 
                 if (Pattern.matches(regex, input)) {
@@ -147,12 +143,15 @@ public class JoueurHumain extends Joueur {
             int choix = this.choisirCarte();
             Carte carte = this.defausserCarte(choix, defausse);
 
-            this.parler("C'était une carte [" + carte + "].\n");
+            this.parler("Je défausse [" + carte + "].\n");
         } else {
             System.out.println();
         }
     }
 
+    /**
+     * Affiche la main du joueur.
+     */
     private void regarderMain() {
         parler("Je regarde ma main...\n");
         for (int i = 0; i < this.getMain().size(); i++) {
