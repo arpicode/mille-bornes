@@ -5,6 +5,11 @@ public class Jeu {
     public static final int NB_JOUEURS_MAX = 6;
     public static final int TAILLE_MAIN = 6;
 
+    public static final int POINTS_BONUS_GAGNANT = 400;
+    public static final int POINTS_BONUS_GAGNANT_SANS_200 = 200;
+    public static final int POINTS_BOTTE_POSEE = 100;
+    public static final int POINTS_COUP_FOURRE = 300;
+
     private int nbJoueurs;
     private int idJoueurCourant;
     private Pioche pioche;
@@ -89,8 +94,14 @@ public class Jeu {
                         System.console().readLine();
                     }
 
-                    // Passer au joueur suivant.
-                    this.idJoueurCourant = (this.idJoueurCourant + 1) % nbJoueurs;
+                    // Passer au joueur suivant. Si un joueur a fait un Coup-fourré c'est à lui
+                    // de jouer.
+                    int idJoueurAvecCoupFourre = chercherJoueurAvecCoupFourre();
+                    if (idJoueurAvecCoupFourre != -1) {
+                        this.idJoueurCourant = idJoueurAvecCoupFourre;
+                    } else {
+                        this.idJoueurCourant = (this.idJoueurCourant + 1) % nbJoueurs;
+                    }
                 }
             }
 
@@ -162,6 +173,21 @@ public class Jeu {
         }
 
         return id;
+    }
+
+    /**
+     * Cherche l'id du joueur qui a jouer un coup-fourré.
+     * 
+     * @return Id du joueur ou -1 si aucun joueur a fait un coup-fourré.
+     */
+    private int chercherJoueurAvecCoupFourre() {
+        for (Joueur joueur : joueurs) {
+            if (joueur.aJouerCoupFourre()) {
+                joueur.setAJouerCoupFourre(false);
+                return joueur.getId();
+            }
+        }
+        return -1;
     }
 
     /**

@@ -73,6 +73,17 @@ public class Carte {
     }
 
     /**
+     * Compare si la carte est du type et de l'indice passés en entrée.
+     * 
+     * @param type        Type de carte.
+     * @param indiceCarte Indice de la carte.
+     * @return true si égaux, false si non.
+     */
+    public boolean estEgale(int type, int indiceCarte) {
+        return this.type == type && this.nom.compareTo(Carte.getNom(type, indiceCarte)) == 0;
+    }
+
+    /**
      * Initialise le nom et le type d'une carte. Si le nom en entrée n'est pas
      * un nom de carte qui existe le type de la carte sera -1.
      * 

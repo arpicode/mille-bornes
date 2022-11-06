@@ -24,7 +24,7 @@ public class JoueurHumain extends Joueur {
 
         // Piocher une carte météo si applicable (kmParcourus >= 500 et qu'on a pas déjà
         // une carte météo)
-        if (this.getKmParcourus() >= 500 && this.getZoneDeJeu().get(Pile.METEO).size() < 1) {
+        if (this.getKmParcourus() >= 500 && this.getPile(Pile.METEO).size() < 1) {
             Carte carteMeteo = this.piocherCarteMeteo(piocheMeteo);
             if (carteMeteo != null) {
                 this.parler("Je pioche une carte Météo : [" + carteMeteo + "].\n");
@@ -48,7 +48,7 @@ public class JoueurHumain extends Joueur {
                     estTourTermine = true;
                 } else if (action == 1) {
                     // Traitement de l'action : 1 Jouer une carte.
-                    int numeroCarteJouee = jouerCarte(choisirCarte(), joueurs, defausse);
+                    int numeroCarteJouee = jouerCarte(choisirCarte(), joueurs, pioche, defausse);
 
                     if (numeroCarteJouee != -1) {
                         estTourTermine = true;
