@@ -42,8 +42,6 @@ public class Jeu {
 
         this.distribuerCartes();
 
-        // this.afficherDonnees(); // Affiche l'état actuel du jeu pour débugger
-
         // Boucle de jeu
         while (!this.estTermine) {
             // Annoncer le tour du joueur
@@ -54,12 +52,14 @@ public class Jeu {
                         + ", appuie ENTRER pour commencer ton tour...");
                 System.console().readLine();
             }
-
+            // ---- Pour Débugger
             System.err.print("Pioche: " + pioche.size());
             for (Joueur j : joueurs) {
                 System.err.print(" " + j.getNom() + "(" + j.getKmParcourus() + ")");
             }
             System.err.println();
+            // ----
+
             // Afficher les zones de jeu des joueurs
             for (Joueur joueur : joueurs) {
                 Affichage.zoneDeJeu(joueur, this.idJoueurCourant);
@@ -67,20 +67,20 @@ public class Jeu {
 
             // Donner la main au joueur courant
             aPasseTour = joueurs.get(this.idJoueurCourant).jouerTour(joueurs, pioche, piocheMeteo, defausse);
+
             if (this.pioche.size() == 0 && aPasseTour) {
                 toursPassesConsecutifs++;
+            } else {
+                toursPassesConsecutifs = 0;
             }
-            // else {
-            // toursPassesConsecutifs = 0;
-            // }
 
             // Le joueur a fini son tour, regarder si il a atteind les 1000 Bornes
-            if (joueurs.get(this.idJoueurCourant).getKmParcourus() > 1000) {
+            if (joueurs.get(this.idJoueurCourant).getKmParcourus() == 1000) {
                 estTermine = true;
             } else {
-                // Si il n'y a plus de carte dans la pioche ET que tout le monde a passé son
+                // S'il n'y a plus de carte dans la pioche ET que tout le monde a passé son
                 // tour
-                if (this.pioche.size() == 0 && toursPassesConsecutifs >= nbJoueurs) {
+                if (this.pioche.size() == 0 && toursPassesConsecutifs == nbJoueurs) {
                     estTermine = true;
                 } else {
                     if (joueurs.get(this.idJoueurCourant) instanceof JoueurHumain) {
@@ -96,7 +96,7 @@ public class Jeu {
 
         }
 
-        if (this.pioche.size() == 0 && toursPassesConsecutifs >= nbJoueurs) {
+        if (this.pioche.size() == 0 && toursPassesConsecutifs == nbJoueurs) {
             System.out.println("Tout le monde a passé son tour, la partie est terminée !");
         }
 
