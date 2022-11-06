@@ -89,6 +89,7 @@ public class JoueurHumain extends Joueur {
             String regex = "^\\s*[1-" + this.getMain().size() + "]\\s*$";
 
             do {
+                parler("Je choisis la carte n° ");
                 input = System.console().readLine();
 
                 if (Pattern.matches(regex, input)) {

@@ -67,19 +67,20 @@ public class Jeu {
 
             // Donner la main au joueur courant
             aPasseTour = joueurs.get(this.idJoueurCourant).jouerTour(joueurs, pioche, piocheMeteo, defausse);
-            if (aPasseTour) {
+            if (this.pioche.size() == 0 && aPasseTour) {
                 toursPassesConsecutifs++;
-            } else {
-                toursPassesConsecutifs = 0;
             }
-            System.out.println(toursPassesConsecutifs);
+            // else {
+            // toursPassesConsecutifs = 0;
+            // }
+
             // Le joueur a fini son tour, regarder si il a atteind les 1000 Bornes
             if (joueurs.get(this.idJoueurCourant).getKmParcourus() > 1000) {
                 estTermine = true;
             } else {
                 // Si il n'y a plus de carte dans la pioche ET que tout le monde a passé son
                 // tour
-                if (this.pioche.size() == 0 && toursPassesConsecutifs == nbJoueurs) {
+                if (this.pioche.size() == 0 && toursPassesConsecutifs >= nbJoueurs) {
                     estTermine = true;
                 } else {
                     if (joueurs.get(this.idJoueurCourant) instanceof JoueurHumain) {
