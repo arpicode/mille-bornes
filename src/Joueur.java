@@ -29,7 +29,9 @@ public abstract class Joueur {
     private int kmParcourus; // Les kilomètre parcourus du joueur.
     private int score; // Le score final du joueur.
     private boolean estMeteoResolue; // Indique si une carte météo à été résolue.
-    private boolean aJoueCoupFourre;
+    private boolean aJoueCoupFourre; // Indique si le joueur vient de jouer un
+                                     // Coup-fourré.
+    private boolean estGagnant; // Indique si le joueur est le gagnant.
 
     /**
      * Constructeur d'un joueur.
@@ -45,6 +47,7 @@ public abstract class Joueur {
         this.score = 0;
         this.estMeteoResolue = false;
         this.aJoueCoupFourre = false;
+        this.estGagnant = false;
         nbJoueur++;
     }
 
@@ -129,6 +132,9 @@ public abstract class Joueur {
         if (!pmeteo.empty()) {
             carte = pmeteo.pop();
             this.getPile(Pile.METEO).push(carte);
+            this.parler("Je pioche une carte météo : [" + carte + "].\n");
+        } else {
+            this.parler("La pioche est vide, pas de carte pour moi :(\n");
         }
 
         return carte;
@@ -645,6 +651,14 @@ public abstract class Joueur {
 
     public void setAJouerCoupFourre(boolean value) {
         this.aJoueCoupFourre = value;
+    }
+
+    public boolean estGagnant() {
+        return this.estGagnant;
+    }
+
+    public void setEstGagnant(boolean value) {
+        this.estGagnant = value;
     }
 
     public ArrayList<Carte> getMain() {

@@ -25,15 +25,10 @@ public class JoueurHumain extends Joueur {
         // Piocher une carte météo si applicable (kmParcourus >= 500 et qu'on a pas déjà
         // une carte météo)
         if (this.getKmParcourus() >= 500 && this.getPile(Pile.METEO).size() < 1) {
-            Carte carteMeteo = this.piocherCarteMeteo(piocheMeteo);
-            if (carteMeteo != null) {
-                this.parler("Je pioche une carte Météo : [" + carteMeteo + "].\n");
-            } else {
-                this.parler("La pioche est vide, pas de carte pour moi :(\n");
-            }
+            this.piocherCarteMeteo(piocheMeteo);
         }
 
-        // Si le joueur à au moins une carte en main
+        // Si le joueur a au moins une carte en main.
         if (this.getMain().size() > 0) {
             boolean estTourTermine = false;
 

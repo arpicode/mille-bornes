@@ -7,6 +7,7 @@ public class Jeu {
 
     public static final int POINTS_BONUS_GAGNANT = 400;
     public static final int POINTS_BONUS_GAGNANT_SANS_200 = 200;
+    public static final int POINTS_BONUS_NON_FANNY = 500;
     public static final int POINTS_BOTTE_POSEE = 100;
     public static final int POINTS_COUP_FOURRE = 300;
 
@@ -25,6 +26,8 @@ public class Jeu {
      * @param configFileName // Fichier de configuration.
      */
     public Jeu(String configFileName) {
+        Affichage.clearScreen();
+        Affichage.nomJeu();
         this.carteParsees = Configuration.parse(configFileName); // return un ArrayList de string
         this.pioche = new Pioche();
         this.piocheMeteo = new Pioche();
@@ -33,7 +36,7 @@ public class Jeu {
         this.estTermine = false;
 
         if (!this.initialiser()) {
-            System.out.println("Impossible d'initialiser le jeu !");
+            Affichage.message("Impossible d'initialiser le jeu ! Vérifiez le fichier de configuration.");
             System.exit(1);
         }
     }
@@ -53,17 +56,10 @@ public class Jeu {
             Affichage.annoncerJoueur(joueurs.get(this.idJoueurCourant));
 
             if (joueurs.get(this.idJoueurCourant) instanceof JoueurHumain) {
-                System.out.println(joueurs.get(this.idJoueurCourant).getNom()
+                Affichage.message(joueurs.get(this.idJoueurCourant).getNom()
                         + ", appuie ENTRER pour commencer ton tour...");
                 System.console().readLine();
             }
-            // ---- Pour Débugger
-            System.err.print("Pioche: " + pioche.size());
-            for (Joueur j : joueurs) {
-                System.err.print(" " + j.getNom() + "(" + j.getKmParcourus() + ")");
-            }
-            System.err.println();
-            // ----
 
             // Afficher les zones de jeu des joueurs
             for (Joueur joueur : joueurs) {
@@ -79,7 +75,7 @@ public class Jeu {
                 toursPassesConsecutifs = 0;
             }
 
-            // Le joueur a fini son tour, regarder si il a atteind les 1000 Bornes
+            // Le joueur a fini son tour, regarder s'il a atteind les 1000 Bornes
             if (joueurs.get(this.idJoueurCourant).getKmParcourus() == 1000) {
                 estTermine = true;
             } else {
@@ -89,8 +85,8 @@ public class Jeu {
                     estTermine = true;
                 } else {
                     if (joueurs.get(this.idJoueurCourant) instanceof JoueurHumain) {
-                        System.out.println(joueurs.get(this.idJoueurCourant).getNom()
-                                + ", appuie sur ENTRER pour passer la main...");
+                        Affichage.message(joueurs.get(this.idJoueurCourant).getNom()
+                                + ", appuie sur ENTRER pour passer la main...\n");
                         System.console().readLine();
                     }
 
@@ -107,12 +103,79 @@ public class Jeu {
 
         }
 
+        Affichage.message("");
         if (this.pioche.size() == 0 && toursPassesConsecutifs == nbJoueurs) {
-            System.out.println("Tout le monde a passé son tour, la partie est terminée !");
+            Affichage.message("Tout le monde a passé son tour, la partie est terminée !\n");
+        } else {
+            Affichage.message("La partie est terminée !\n");
         }
 
-        System.out.println("TODO... afficher la fin de jeu (gagnant, scores...)");
+        ArrayList<Joueur> joueursClasses = calculerScoresFinaux();
+        Affichage.scoreFinalManche(joueursClasses);
+    }
 
+    /**
+     * Calculer le score final des joueurs et determiner les gagnants. Les
+     * gagnants sont ceux avec le plus grand Km parcourus par forcement ceux
+     * avec le plus gros score.
+     * 
+     * @return Les joueurs triés par Km parcourus décroissant.
+     */
+    public ArrayList<Joueur> calculerScoresFinaux() {
+        ArrayList<Joueur> tmp = new ArrayList<Joueur>();
+        for (Joueur joueur : joueurs) {
+            tmp.add(joueur);
+        }
+
+        tmp.sort((j1, j2) -> { // tri décroissant des joueurs par leur score.
+            if (j1.getKmParcourus() == j2.getKmParcourus())
+                return 0;
+            if (j1.getKmParcourus() < j2.getKmParcourus())
+                return 1;
+            else
+                return -1;
+        });
+
+        int plusGrosKm = tmp.get(0).getKmParcourus();
+        int nbJoueursSansEtape = 0;
+        for (Joueur joueur : tmp) {
+            // Regarder si le joueur est "fanny" (pas d'étape)
+            if (joueur.getPile(Joueur.Pile.ETAPE).isEmpty()) {
+                nbJoueursSansEtape++;
+            }
+
+            // Ajouter les KmParcourus au score.
+            joueur.mettreAJourScore(joueur.getKmParcourus());
+
+            // Si aucun joueurs n'a d'étapes, il n'y a pas de gagnants.
+            if (nbJoueursSansEtape != nbJoueurs) {
+                // Ajouter les points pour avoir gagné
+                if (joueur.getKmParcourus() == plusGrosKm) {
+                    joueur.setEstGagnant(true);
+                    joueur.mettreAJourScore(Jeu.POINTS_BONUS_GAGNANT);
+                    // Regarder si le gagnant n'a pas étapes 200.
+                    if (!joueur.getPile(Joueur.Pile.ETAPE).contient(Carte.getNom(Carte.TYPE_ETAPE, Carte.ETAPE_200))) {
+                        // Ajouter les points pour avoir gagné sans étape 200.
+                        joueur.mettreAJourScore(Jeu.POINTS_BONUS_GAGNANT_SANS_200);
+                    }
+                }
+            }
+        }
+
+        // S'il y a au moins 1 joueur sans étapes donner des points bonus a tous
+        // les autres joueurs avec des étapes
+        if (nbJoueursSansEtape > 1) {
+            for (Joueur joueur : tmp) {
+                if (!joueur.getPile(Joueur.Pile.ETAPE).isEmpty()) {
+                    joueur.mettreAJourScore(Jeu.POINTS_BONUS_NON_FANNY);
+                }
+            }
+        }
+
+        // Les points rapportés pas les bottes et coup-fourré sont déjà comptés
+        // au moment où elles sont jouées.
+
+        return tmp;
     }
 
     /**
@@ -126,8 +189,8 @@ public class Jeu {
          * TODO si on implémente le JoueurOrdinateur on demande ici si le joueur
          * veut joueur contre des ordi. Si oui il sera seul et il y aura
          * (nbJoueurs - 1) ordinateurs. Il faudra modifier l'initialisation des
-         * joueurs en conséquence. Le nom et age des ordi pourrais être générés
-         * aléatoirement.
+         * joueurs en conséquence. Le nom et age des ordi pourraient être
+         * générés aléatoirement.
          */
 
         // Initialiser les joueurs.
@@ -222,6 +285,12 @@ public class Jeu {
                     estPiochesValide = false;
                 }
             }
+        }
+
+        if (this.pioche.size() < Jeu.TAILLE_MAIN * this.nbJoueurs) {
+            System.out.println("Pas assez de cartes. Il faut au moins pouvoir distribuer "
+                    + Jeu.TAILLE_MAIN + " cartes à tous les joueurs !");
+            estPiochesValide = false;
         }
 
         if (estPiochesValide) {

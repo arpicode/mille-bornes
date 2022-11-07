@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Affichage {
@@ -30,7 +31,6 @@ public class Affichage {
      * Affiche le nom du jeu : Mille Bornes.
      */
     public static void nomJeu() {
-        clearScreen();
         System.out.println(Color.CYAN + " __  __ _ _ _" + Color.LIGHT_RED
                 + "        ____");
         System.out.println(Color.CYAN + "|  \\/  (_) | | ___  " + Color.LIGHT_RED
@@ -52,7 +52,6 @@ public class Affichage {
      * @return le nombre de joueurs.
      */
     public static int saisieNombreJoueurs() {
-        nomJeu();
         final String messageErreur = Color.RED + "Erreur de saisie ! Veuillez recommencer.\n" + Color.END;
         int nbJoueurs = 0;
 
@@ -86,7 +85,6 @@ public class Affichage {
      * @return Le nom et l'âge du joueur sous la forme <nom>;<âge>.
      */
     public static String saisieNomEtAgeJoueur(int numeroJoueur) {
-        nomJeu();
         String nomEtAge = "";
         boolean estValide = false;
 
@@ -149,6 +147,26 @@ public class Affichage {
         }
 
         System.out.println("\n");
+    }
+
+    /**
+     * Affiche le score final de la manche de tous les joueurs.
+     * 
+     * @param joueurs Joueurs trié par Km parcourus décroissant.
+     */
+    public static void scoreFinalManche(ArrayList<Joueur> joueurs) {
+        for (int i = 0; i < joueurs.size(); i++) {
+            System.out.print(Color.YELLOW + (i + 1) + Color.END + " - " + joueurs.get(i).getNom() + " ");
+            if (joueurs.get(i).estGagnant()) {
+                System.out.print(Color.LIGHT_GREEN + "Gagnant ! " + Color.END);
+            }
+            System.out.print(":\t");
+            System.out.println(Color.BOLD + joueurs.get(i).getScore() + Color.END);
+        }
+    }
+
+    public static void message(String message) {
+        System.out.println(Color.YELLOW + message + Color.END);
     }
 
     /**

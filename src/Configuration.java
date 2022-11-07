@@ -54,7 +54,12 @@ public class Configuration {
             }
         } catch (IOException exception) {
             System.err.println("Une erreur est survenue pendant la lecture du fichier de configuration.");
-            System.err.println(exception.getMessage());
+        }
+        System.out.println("Terminé.\n");
+
+        if (result.size() == 0) {
+            System.out.println("Le fichier de configuration n'a pas de cartes !");
+            System.exit(1);
         }
 
         return result;
@@ -88,6 +93,7 @@ public class Configuration {
                 "#",
                 "# Pour recréer la configuration par défaut vous pouvez toujours",
                 "# supprimer ce fichier et relancer le jeu.",
+                "#",
                 "",
                 "",
                 "# Étapes",
@@ -126,7 +132,6 @@ public class Configuration {
             Files.write(Paths.get(fileName), lines, StandardCharsets.UTF_8, StandardOpenOption.CREATE);
         } catch (IOException exception) {
             System.err.println("Une erreur est survenue pendant la création du fichier de configuration.");
-            System.err.println(exception.getMessage());
         }
     }
 

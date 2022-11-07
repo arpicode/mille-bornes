@@ -1,0 +1,55 @@
+#  __  __ _ _ _        ____
+# |  \/  (_) | | ___  | __ )  ___  _ __ _ __   ___  ___
+# | |\/| | | | |/ _ \ |  _ \ / _ \| '__| '_ \ / _ \/ __|
+# | |  | | | | |  __/ | |_) | (_) | |  | | | |  __/\__ \
+# |_|  |_|_|_|_|\___| |____/ \___/|_|  |_| |_|\___||___/
+#
+# Bienvenu dans le fichier de configuration du Mille Bornes !
+#
+# Ici vous avez la possibilité de changer les quantités des
+# différentes cartes du jeu. Le symbole '#' vous permet
+# d'écrire un commentaire qui sera ignoré.
+#
+# Par exemple :
+# Si vous voulez jouer avec 5 cartes 'Accident' au lieu de 3,
+# vous pouvez modifier la ligne '3;Accident' en '5;Accident'.
+# Une autre possibilité serait de créer une nouvelle ligne en
+# indiquant '2;Accident' et ces 2 cartes seraient ajoutées aux
+# 3 présentes par défaut.
+#
+# Pour recréer la configuration par défaut vous pouvez toujours
+# supprimer ce fichier et relancer le jeu.
+#
+
+
+# Étapes
+2;25     #10;25
+2;50     #10;50
+2;75     #10;75
+3;100     #12;100
+2;200     #4;200
+
+# Attaques
+1;Feu Rouge    #5;Feu Rouge
+1;Limite de Vitesse    #4;Limite de Vitesse
+1;Panne d'Essence    #3;Panne d'Essence
+1;Crevé    #3;Crevé
+1;Accident    #3;Accident
+
+# Défense
+6;Feu Vert    #14;Feu Vert
+2;Fin de Limite de Vitesse    #6;Fin de Limite de Vitesse
+2;Essence    #6;Essence
+2;Roue de Secours    #6;Roue de Secours
+2;Réparation    #6;Réparation
+
+# Bottes
+1;Prioritaire    #1;Prioritaire
+1;Citerne    #1;Citerne
+1;Increvable    #1;Increvable
+1;As du volant    #1;As du volant
+
+# Météo
+2;Neige    #3;Neige
+2;Beau Temps    #3;Beau Temps
+2;Vent dans le Dos    #3;Vent dans le Dos
