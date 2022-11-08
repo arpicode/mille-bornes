@@ -2,6 +2,8 @@ import java.util.ArrayList;
 
 /**
  * Classe qui représente le Jeu. Contient la boucle de jeu.
+ * 
+ * @author Les Bornés
  */
 public class Jeu {
     public static final int NB_JOUEURS_MIN = 2;

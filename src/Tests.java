@@ -2,8 +2,13 @@ import java.util.ArrayList;
 
 /**
  * Classe permettant de déninir des tests.
+ * 
+ * @author Les Bornés
  */
 public class Tests {
+        private Tests() {
+        }
+
         /**
          * Tests de la classe Carte
          */

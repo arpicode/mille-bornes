@@ -29,8 +29,7 @@ public abstract class Joueur {
     private int kmParcourus; // Les kilomètre parcourus du joueur.
     private int score; // Le score final du joueur.
     private boolean estMeteoResolue; // Indique si une carte météo à été résolue.
-    private boolean aJoueBotte; // Indique si le joueur vient de jouer un
-                                // Coup-fourré.
+    private boolean aJoueBotte; // Indique si le joueur vient de jouer une Botte.
     private boolean estGagnant; // Indique si le joueur est le gagnant.
 
     /**

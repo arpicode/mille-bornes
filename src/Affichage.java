@@ -5,9 +5,14 @@ import java.util.regex.Pattern;
 
 /**
  * Classe qui permet au Jeu d'afficher ses messages aux joueurs.
+ * 
+ * @author Les Bornés
  */
 public class Affichage {
     private static Scanner scanner = new Scanner(System.in, "IBM850");
+
+    private Affichage() {
+    }
 
     /**
      * Classe static interne qui défini les couleurs d'affichage de la console.

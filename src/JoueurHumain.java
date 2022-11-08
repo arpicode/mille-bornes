@@ -4,6 +4,8 @@ import java.util.regex.Pattern;
 
 /**
  * Classe qui définie un joueur humain.
+ * 
+ * @author Les Bornés
  */
 public class JoueurHumain extends Joueur {
     private static Scanner scanner = new Scanner(System.in);
