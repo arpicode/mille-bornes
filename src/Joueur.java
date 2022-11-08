@@ -29,8 +29,8 @@ public abstract class Joueur {
     private int kmParcourus; // Les kilomètre parcourus du joueur.
     private int score; // Le score final du joueur.
     private boolean estMeteoResolue; // Indique si une carte météo à été résolue.
-    private boolean aJoueCoupFourre; // Indique si le joueur vient de jouer un
-                                     // Coup-fourré.
+    private boolean aJoueBotte; // Indique si le joueur vient de jouer un
+                                // Coup-fourré.
     private boolean estGagnant; // Indique si le joueur est le gagnant.
 
     /**
@@ -46,7 +46,7 @@ public abstract class Joueur {
         this.kmParcourus = 0;
         this.score = 0;
         this.estMeteoResolue = false;
-        this.aJoueCoupFourre = false;
+        this.aJoueBotte = false;
         this.estGagnant = false;
         nbJoueur++;
     }
@@ -297,7 +297,6 @@ public abstract class Joueur {
                 joueurCible.parler("Coup-fourré !!\n");
                 joueurCible.jouerCarteBotte(numeroCarteCoupFourre, defausse);
                 joueurCible.mettreAJourScore(Jeu.POINTS_COUP_FOURRE);
-                joueurCible.aJoueCoupFourre = true;
                 joueurCible.piocherCarte(pioche);
             }
 
@@ -468,7 +467,7 @@ public abstract class Joueur {
         Carte carteBotte = this.main.get(numeroCarte - 1);
 
         // Il n'y a pas de conditions pour pouvoir jouer une botte.
-        parler("Je joue la botte [" + carteBotte + "].\n");
+        parler("Je joue la botte [" + carteBotte + "]. Et je vais rejouer !\n");
 
         // Si le joueur joue la botte Prioritaire.
         if (carteBotte.getNom().compareTo(Carte.getNom(Carte.TYPE_BOTTE, Carte.PRIORITAIRE)) == 0) {
@@ -496,6 +495,7 @@ public abstract class Joueur {
             }
         }
 
+        this.setAJouerBotte(true);
         poserCarte(numeroCarte, this, Pile.BOTTE);
         mettreAJourScore(Jeu.POINTS_BOTTE_POSEE);
 
@@ -705,17 +705,17 @@ public abstract class Joueur {
      * 
      * @return true si un Coup-fourré a été joué, false si non.
      */
-    public boolean aJouerCoupFourre() {
-        return this.aJoueCoupFourre;
+    public boolean aJouerBotte() {
+        return this.aJoueBotte;
     }
 
     /**
-     * Setter permetant d'affecter la valeur de aJoueCoupFourre
+     * Setter permetant d'affecter la valeur de aJoueBotte
      * 
      * @param value true ou false.
      */
-    public void setAJouerCoupFourre(boolean value) {
-        this.aJoueCoupFourre = value;
+    public void setAJouerBotte(boolean value) {
+        this.aJoueBotte = value;
     }
 
     /**

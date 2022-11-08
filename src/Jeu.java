@@ -91,11 +91,11 @@ public class Jeu {
                         Affichage.attendreJoueur(joueurs.get(this.idJoueurCourant));
                     }
 
-                    // Passer au joueur suivant. Si un joueur a fait un Coup-fourré c'est à lui
-                    // de jouer.
-                    int idJoueurAvecCoupFourre = chercherJoueurAvecCoupFourre();
-                    if (idJoueurAvecCoupFourre != -1) {
-                        this.idJoueurCourant = idJoueurAvecCoupFourre;
+                    // Passer au joueur suivant. Si un joueur a joué une botte, c'est à lui de
+                    // jouer.
+                    int idJoueurJoueBotte = chercherJoueurJoueBotte();
+                    if (idJoueurJoueBotte != -1) {
+                        this.idJoueurCourant = idJoueurJoueBotte;
                     } else {
                         this.idJoueurCourant = (this.idJoueurCourant + 1) % nbJoueurs;
                     }
@@ -239,14 +239,14 @@ public class Jeu {
     }
 
     /**
-     * Cherche l'id du joueur qui a jouer un coup-fourré.
+     * Cherche l'id du joueur qui vient de jouer une botte.
      * 
-     * @return Id du joueur ou -1 si aucun joueur a fait un coup-fourré.
+     * @return Id du joueur ou -1 si aucun joueur vient de jouer une botte.
      */
-    private int chercherJoueurAvecCoupFourre() {
+    private int chercherJoueurJoueBotte() {
         for (Joueur joueur : joueurs) {
-            if (joueur.aJouerCoupFourre()) {
-                joueur.setAJouerCoupFourre(false);
+            if (joueur.aJouerBotte()) {
+                joueur.setAJouerBotte(false);
                 return joueur.getId();
             }
         }
