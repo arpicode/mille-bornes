@@ -8,6 +8,9 @@ import java.util.Collections;
  */
 public class Pioche extends PileCartes {
 
+    /**
+     * Constructeur permettant d'instancier une pioche.
+     */
     public Pioche() {
         super();
     }
@@ -17,7 +20,7 @@ public class Pioche extends PileCartes {
      * 
      * @param ArrayList<Carte> cartes
      */
-    public Pioche(ArrayList<Carte> cartes) {
+    protected Pioche(ArrayList<Carte> cartes) {
         super();
         alimenter(cartes);
     }

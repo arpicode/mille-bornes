@@ -1,5 +1,8 @@
 import java.util.ArrayList;
 
+/**
+ * Classe qui représente le Jeu. Contient la boucle de jeu.
+ */
 public class Jeu {
     public static final int NB_JOUEURS_MIN = 2;
     public static final int NB_JOUEURS_MAX = 6;
@@ -21,7 +24,7 @@ public class Jeu {
     private boolean estTermine;
 
     /**
-     * Constructeur du jeu.
+     * Constructeur qui permet d'instancier le jeu.
      * 
      * @param configFileName // Fichier de configuration.
      */
@@ -42,7 +45,7 @@ public class Jeu {
     }
 
     /**
-     * Démarre la partie de Mille Bornes.
+     * Démarre une partie de Mille Bornes.
      */
     public void demarrer() {
         boolean aPasseTour;
@@ -52,13 +55,12 @@ public class Jeu {
 
         // Boucle de jeu
         while (!this.estTermine) {
+            Affichage.clearScreen();
             // Annoncer le tour du joueur
             Affichage.annoncerJoueur(joueurs.get(this.idJoueurCourant));
 
             if (joueurs.get(this.idJoueurCourant) instanceof JoueurHumain) {
-                Affichage.message(joueurs.get(this.idJoueurCourant).getNom()
-                        + ", appuie ENTRER pour commencer ton tour...");
-                System.console().readLine();
+                Affichage.attendreJoueur(joueurs.get(this.idJoueurCourant));
             }
 
             // Afficher les zones de jeu des joueurs
@@ -69,6 +71,7 @@ public class Jeu {
             // Donner la main au joueur courant
             aPasseTour = joueurs.get(this.idJoueurCourant).jouerTour(joueurs, pioche, piocheMeteo, defausse);
 
+            // Comptabiliser le nombre de joueurs qui ont passés consécutivement.
             if (this.pioche.size() == 0 && aPasseTour) {
                 toursPassesConsecutifs++;
             } else {
@@ -85,9 +88,7 @@ public class Jeu {
                     estTermine = true;
                 } else {
                     if (joueurs.get(this.idJoueurCourant) instanceof JoueurHumain) {
-                        Affichage.message(joueurs.get(this.idJoueurCourant).getNom()
-                                + ", appuie sur ENTRER pour passer la main...\n");
-                        System.console().readLine();
+                        Affichage.attendreJoueur(joueurs.get(this.idJoueurCourant));
                     }
 
                     // Passer au joueur suivant. Si un joueur a fait un Coup-fourré c'est à lui
@@ -103,11 +104,10 @@ public class Jeu {
 
         }
 
-        Affichage.message("");
         if (this.pioche.size() == 0 && toursPassesConsecutifs == nbJoueurs) {
-            Affichage.message("Tout le monde a passé son tour, la partie est terminée !\n");
+            Affichage.message("\nTout le monde a passé son tour, la partie est terminée !\n");
         } else {
-            Affichage.message("La partie est terminée !\n");
+            Affichage.message("\nLa partie est terminée !\n");
         }
 
         ArrayList<Joueur> joueursClasses = calculerScoresFinaux();
@@ -115,7 +115,7 @@ public class Jeu {
     }
 
     /**
-     * Calculer le score final des joueurs et determiner les gagnants. Les
+     * Calculer le score final des joueurs et déterminer les gagnants. Les
      * gagnants sont ceux avec le plus grand Km parcourus par forcement ceux
      * avec le plus gros score.
      * 
@@ -210,7 +210,7 @@ public class Jeu {
     }
 
     /**
-     * Distribuer la main de départ de 6 cartes à tous les joueurs.
+     * Distribuer la main de départ de Jeu.TAILLE_MAIN cartes à tous les joueurs.
      */
     private void distribuerCartes() {
         for (int i = 0; i < Jeu.TAILLE_MAIN; i++) {
@@ -262,7 +262,7 @@ public class Jeu {
     private boolean initialiserPioches() {
         boolean estPiochesValide = true;
 
-        // parcour le fichier ctrl+espace
+        // Parcourir les lignes parsées
         for (int i = 0; i < this.carteParsees.size(); i++) {
             String[] tempresult = this.carteParsees.get(i).split(";");
             int nombreCarte = Integer.parseInt(tempresult[0].trim()); // trim() retourne la chaine de caractère sans
@@ -273,7 +273,7 @@ public class Jeu {
 
                 Carte carte = new Carte(nomCarte);
 
-                // ajouter la carte au dessus de la pile correspondante si elle est valide
+                // Ajouter la carte au dessus de la pile correspondante si elle est valide.
                 if (carte.estValide()) {
                     if (carte.getType() != Carte.TYPE_METEO) {
                         this.pioche.push(carte);
@@ -287,6 +287,7 @@ public class Jeu {
             }
         }
 
+        // Vérifier qu'il y a assez de cartes pour tous les joueurs.
         if (this.pioche.size() < Jeu.TAILLE_MAIN * this.nbJoueurs) {
             System.out.println("Pas assez de cartes. Il faut au moins pouvoir distribuer "
                     + Jeu.TAILLE_MAIN + " cartes à tous les joueurs !");
@@ -302,7 +303,7 @@ public class Jeu {
     }
 
     /**
-     * Afficher les données du jeu. Utilisé pour tester la classe.
+     * Afficher les données du jeu. Utilisée pour tester la classe.
      */
     public void afficherDonnees() {
         // Nombre de joueurs
@@ -334,28 +335,6 @@ public class Jeu {
         // Joueur courant
         System.out.println("Id du Joueur courant: " + this.idJoueurCourant);
         System.out.println();
-    }
-
-    /**
-     * @return La pioche normale.
-     */
-    public Pioche getPioche() {
-
-        return this.pioche;
-    }
-
-    /**
-     * @return La pioche météo.
-     */
-    public Pioche getPiocheMeteo() {
-        return piocheMeteo;
-    }
-
-    /**
-     * @return La pile de défausse.
-     */
-    public Defausse getDefausse() {
-        return defausse;
     }
 
 }

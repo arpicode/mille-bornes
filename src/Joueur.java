@@ -297,7 +297,7 @@ public abstract class Joueur {
                 joueurCible.parler("Coup-fourré !!\n");
                 joueurCible.jouerCarteBotte(numeroCarteCoupFourre, defausse);
                 joueurCible.mettreAJourScore(Jeu.POINTS_COUP_FOURRE);
-                joueurCible.setAJouerCoupFourre(true);
+                joueurCible.aJoueCoupFourre = true;
                 joueurCible.piocherCarte(pioche);
             }
 
@@ -534,6 +534,25 @@ public abstract class Joueur {
     }
 
     /**
+     * Permet d'ajouter des points au score du joueur.
+     * 
+     * @param points Points à ajouter.
+     */
+    public void mettreAJourScore(int points) {
+        this.score += points;
+    }
+
+    /**
+     * Permet d'obtenir une pile de la zone de jeu du joueur.
+     * 
+     * @param pile Pile
+     * @return La pile de la zone de jeu.
+     */
+    public PileCartes getPile(Pile pile) {
+        return this.zoneDeJeu.get(pile);
+    }
+
+    /**
      * Permet de savoir si un joueur est attaqué par autre chose qu'une Limite
      * de Vitesse.
      * 
@@ -609,70 +628,135 @@ public abstract class Joueur {
                 + " [" + carte + "].");
     }
 
+    /**
+     * Getter permettant d'obtenir l'id du joueur.
+     * 
+     * @return Id du joueur.
+     */
     public int getId() {
         return id;
     }
 
+    /**
+     * Getter permettant d'obtenir le nom du joueur.
+     * 
+     * @return Nom du joueur.
+     */
     public String getNom() {
         return nom;
     }
 
+    /**
+     * Getter permettant d'obtenir l'âge du joueur.
+     * 
+     * @return Âge du joueur.
+     */
     public int getAge() {
         return age;
     }
 
+    /**
+     * Setter permettant d'affecter l'âge du joueur.
+     * 
+     * @param age
+     */
     public void setAge(int age) {
         this.age = age;
     }
 
+    /**
+     * Getter permettant d'obtenir les Km parcourus par le joueur.
+     * 
+     * @return Les Km parcourus.
+     */
     public int getKmParcourus() {
         return kmParcourus;
     }
 
+    /**
+     * Getter permettant d'obtenir le score du joueur.
+     * 
+     * @return Score du joueur.
+     */
     public int getScore() {
         return score;
     }
 
+    /**
+     * Setter permettant d'affecter le score du joueur.
+     * 
+     * @param score Score du joueur.
+     */
     public void setScore(int score) {
         this.score = score;
     }
 
-    public void mettreAJourScore(int points) {
-        this.score += points;
-    }
-
-    public boolean getEstMeteoResolue() {
+    /**
+     * Getter permettant de savoir si la carte météo a été résolue.
+     * 
+     * @return true si elle est résolue, false si non.
+     */
+    public boolean estMeteoResolue() {
         return this.estMeteoResolue;
     }
 
+    /**
+     * Getter permettant de savoir si le joueur à fait un Coup-fourré.
+     * 
+     * @return true si un Coup-fourré a été joué, false si non.
+     */
     public boolean aJouerCoupFourre() {
         return this.aJoueCoupFourre;
     }
 
+    /**
+     * Setter permetant d'affecter la valeur de aJoueCoupFourre
+     * 
+     * @param value true ou false.
+     */
     public void setAJouerCoupFourre(boolean value) {
         this.aJoueCoupFourre = value;
     }
 
+    /**
+     * Getter permettant de savoir si le joueur à fait un Coup-fourré.
+     * 
+     * @return true si un Coup-fourré a été joué, false si non.
+     */
     public boolean estGagnant() {
         return this.estGagnant;
     }
 
+    /**
+     * Setter permettant d'affecter la valeur estGagnant du joueur.
+     * 
+     * @param value true ou false
+     */
     public void setEstGagnant(boolean value) {
         this.estGagnant = value;
     }
 
+    /**
+     * Getter permettant d'obtenir la main du joueur.
+     * 
+     * @return Main du joueur.
+     */
     public ArrayList<Carte> getMain() {
         return main;
     }
 
+    /**
+     * Getter permettant d'obtenir la zone de jeu du joueur.
+     * 
+     * @return La zone de jeu du joueur.
+     */
     public EnumMap<Pile, PileCartes> getZoneDeJeu() {
         return zoneDeJeu;
     }
 
-    public PileCartes getPile(Pile pile) {
-        return this.zoneDeJeu.get(pile);
-    }
-
+    /**
+     * Surcharge de la methode toString(). Utilisée pour tester
+     */
     public String toString() {
         String result = "  [Id: " + this.id;
         result += "  Nom: " + this.nom;
@@ -694,37 +778,11 @@ public abstract class Joueur {
     private EnumMap<Pile, PileCartes> initialiseZoneDeJeu() {
         EnumMap<Pile, PileCartes> result = new EnumMap<Pile, PileCartes>(Pile.class);
 
-        for (Pile z : Pile.values()) {
-            result.put(z, new PileCartes());
+        // Initialiser toutes les piles de la zone de jeu.
+        for (Pile pile : Pile.values()) {
+            result.put(pile, new PileCartes());
         }
 
-        // juste pour tester tous les joueurs créés auront les même cartes sur table.
-        // result.get(Pile.ETAPE).push(new Carte("75"));
-        // result.get(Pile.ETAPE).push(new Carte("200"));
-        // result.get(Pile.ETAPE).push(new Carte("100"));
-        // result.get(Pile.ETAPE).push(new Carte("50"));
-
-        // result.get(Pile.VITESSE).push(new Carte("Limite de Vitesse"));
-        // result.get(Pile.VITESSE).push(new Carte("Fin de Limite de Vitesse"));
-
-        // result.get(Pile.BATAILLE).push(new Carte("Feu Vert"));
-        // result.get(Pile.BATAILLE).push(new Carte("Accident"));
-        // result.get(Pile.BATAILLE).push(new Carte("Réparation"));
-        // result.get(Pile.BATAILLE).push(new Carte("Feu Vert"));
-        // result.get(Pile.BATAILLE).push(new Carte("Crevé"));
-        // result.get(Pile.BATAILLE).push(new Carte("Roue de Secours"));
-        // result.get(Pile.BATAILLE).push(new Carte("Feu Vert"));
-        // result.get(Pile.BATAILLE).push(new Carte("Feu Rouge"));
-        // result.get(Pile.BATAILLE).push(new Carte("Feu Vert"));
-        // result.get(Pile.BATAILLE).push(new Carte("Feu Rouge"));
-        // result.get(Pile.BATAILLE).push(new Carte("Feu Vert"));
-        // result.get(Pile.BATAILLE).push(new Carte("Panne d'Essence"));
-        // result.get(Pile.BATAILLE).push(new Carte("Essence"));
-
-        // result.get(Pile.BOTTE).push(new Carte("as du volant"));
-
-        // result.get(Pile.METEO).push(new Carte("neige"));
-        // ------
         return result;
     }
 }

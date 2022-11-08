@@ -11,7 +11,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Classe responsable de la configuration du jeu.
+ * Classe responsable de la configuration du jeu. Elle permet la lecture du
+ * fichier de configuration mais n'est pas responsable de la validité des cartes
+ * présentes dans le fichier.
  * 
  * @author Les Bornés
  */
@@ -53,6 +55,7 @@ public class Configuration {
                 }
             }
         } catch (IOException exception) {
+            exception.printStackTrace();
             System.err.println("Une erreur est survenue pendant la lecture du fichier de configuration.");
         }
         System.out.println("Terminé.\n");
@@ -97,36 +100,36 @@ public class Configuration {
                 "",
                 "",
                 "# Étapes",
-                "10;" + Carte.getCartes()[Carte.TYPE_ETAPE][Carte.ETAPE_25],
-                "10;" + Carte.getCartes()[Carte.TYPE_ETAPE][Carte.ETAPE_50],
-                "10;" + Carte.getCartes()[Carte.TYPE_ETAPE][Carte.ETAPE_75],
-                "12;" + Carte.getCartes()[Carte.TYPE_ETAPE][Carte.ETAPE_100],
-                "4;" + Carte.getCartes()[Carte.TYPE_ETAPE][Carte.ETAPE_200],
+                "10;" + Carte.getNom(Carte.TYPE_ETAPE, Carte.ETAPE_25),
+                "10;" + Carte.getNom(Carte.TYPE_ETAPE, Carte.ETAPE_50),
+                "10;" + Carte.getNom(Carte.TYPE_ETAPE, Carte.ETAPE_75),
+                "12;" + Carte.getNom(Carte.TYPE_ETAPE, Carte.ETAPE_100),
+                "4;" + Carte.getNom(Carte.TYPE_ETAPE, Carte.ETAPE_200),
                 "",
                 "# Attaques",
-                "5;" + Carte.getCartes()[Carte.TYPE_ATTAQUE][Carte.FEU_ROUGE],
-                "4;" + Carte.getCartes()[Carte.TYPE_ATTAQUE][Carte.LIMITE_VITESSE],
-                "3;" + Carte.getCartes()[Carte.TYPE_ATTAQUE][Carte.PANNE_ESSENCE],
-                "3;" + Carte.getCartes()[Carte.TYPE_ATTAQUE][Carte.CREVE],
-                "3;" + Carte.getCartes()[Carte.TYPE_ATTAQUE][Carte.ACCIDENT],
+                "5;" + Carte.getNom(Carte.TYPE_ATTAQUE, Carte.FEU_ROUGE),
+                "4;" + Carte.getNom(Carte.TYPE_ATTAQUE, Carte.LIMITE_VITESSE),
+                "3;" + Carte.getNom(Carte.TYPE_ATTAQUE, Carte.PANNE_ESSENCE),
+                "3;" + Carte.getNom(Carte.TYPE_ATTAQUE, Carte.CREVE),
+                "3;" + Carte.getNom(Carte.TYPE_ATTAQUE, Carte.ACCIDENT),
                 "",
                 "# Parades",
-                "14;" + Carte.getCartes()[Carte.TYPE_PARADE][Carte.FEU_VERT],
-                "6;" + Carte.getCartes()[Carte.TYPE_PARADE][Carte.FIN_LIMITE_VITESSE],
-                "6;" + Carte.getCartes()[Carte.TYPE_PARADE][Carte.ESSENCE],
-                "6;" + Carte.getCartes()[Carte.TYPE_PARADE][Carte.ROUE_SECOURS],
-                "6;" + Carte.getCartes()[Carte.TYPE_PARADE][Carte.REPARATION],
+                "14;" + Carte.getNom(Carte.TYPE_PARADE, Carte.FEU_VERT),
+                "6;" + Carte.getNom(Carte.TYPE_PARADE, Carte.FIN_LIMITE_VITESSE),
+                "6;" + Carte.getNom(Carte.TYPE_PARADE, Carte.ESSENCE),
+                "6;" + Carte.getNom(Carte.TYPE_PARADE, Carte.ROUE_SECOURS),
+                "6;" + Carte.getNom(Carte.TYPE_PARADE, Carte.REPARATION),
                 "",
                 "# Bottes",
-                "1;" + Carte.getCartes()[Carte.TYPE_BOTTE][Carte.PRIORITAIRE],
-                "1;" + Carte.getCartes()[Carte.TYPE_BOTTE][Carte.CITERNE],
-                "1;" + Carte.getCartes()[Carte.TYPE_BOTTE][Carte.INCREVABLE],
-                "1;" + Carte.getCartes()[Carte.TYPE_BOTTE][Carte.AS_VOLANT],
+                "1;" + Carte.getNom(Carte.TYPE_BOTTE, Carte.PRIORITAIRE),
+                "1;" + Carte.getNom(Carte.TYPE_BOTTE, Carte.CITERNE),
+                "1;" + Carte.getNom(Carte.TYPE_BOTTE, Carte.INCREVABLE),
+                "1;" + Carte.getNom(Carte.TYPE_BOTTE, Carte.AS_VOLANT),
                 "",
                 "# Météo",
-                "3;" + Carte.getCartes()[Carte.TYPE_METEO][Carte.NEIGE],
-                "3;" + Carte.getCartes()[Carte.TYPE_METEO][Carte.BEAU_TEMPS],
-                "3;" + Carte.getCartes()[Carte.TYPE_METEO][Carte.VENT_DOS]);
+                "3;" + Carte.getNom(Carte.TYPE_METEO, Carte.NEIGE),
+                "3;" + Carte.getNom(Carte.TYPE_METEO, Carte.BEAU_TEMPS),
+                "3;" + Carte.getNom(Carte.TYPE_METEO, Carte.VENT_DOS));
 
         try {
             Files.write(Paths.get(fileName), lines, StandardCharsets.UTF_8, StandardOpenOption.CREATE);

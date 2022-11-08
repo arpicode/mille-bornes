@@ -10,7 +10,7 @@ public class Carte {
     public static final int TYPE_BOTTE = 3;
     public static final int TYPE_METEO = 4;
 
-    // Indice des cartes
+    // Indice des cartes dans le tableau nomsDesCartes
     public static final int ETAPE_25 = 0;
     public static final int ETAPE_50 = 1;
     public static final int ETAPE_75 = 2;
@@ -45,7 +45,7 @@ public class Carte {
      * contre à la fois Feu Rouge et Limite de Vitesse.
      * 
      * Exemple d'utilisation pour obtenir le nom de la carte "Roue de Secours"
-     * => getCartes()[TYPE_PARADE][ROUE_SECOURS]
+     * => Carte.getNom(TYPE_PARADE, ROUE_SECOURS)
      */
     private static final String[][] nomsDesCartes = new String[][] {
             // nomDesCartes[TYPE_ETAPE] => tableau avec des Etapes
@@ -63,13 +63,25 @@ public class Carte {
     private String nom;
     private int type;
 
+    /**
+     * Constructeur permettant d'instancier une carte grace à son nom.
+     * 
+     * @param nom Nom de la carte.
+     */
     public Carte(String nom) {
         initialiserCarte(nom);
     }
 
+    /**
+     * Constructeur qui permet d'instancier une carte grace à son type et
+     * l'indice correspondant à son nom.
+     * 
+     * @param type        Type de la carte.
+     * @param indiceCarte Indice de la carte.
+     */
     public Carte(int type, int indiceCarte) {
         this.type = type;
-        this.nom = Carte.getCartes()[type][indiceCarte];
+        this.nom = Carte.getNom(type, indiceCarte);
     }
 
     /**
@@ -115,27 +127,47 @@ public class Carte {
         return this.type != -1;
     }
 
+    /**
+     * Permet d'obtenir le nom d'une carte en fonction de son type et indice.
+     * 
+     * @param type        Type de la carte.
+     * @param indiceCarte Indice de la carte
+     * @return Nom de la carte.
+     */
+    public static String getNom(int type, int indiceCarte) {
+        return nomsDesCartes[type][indiceCarte];
+    }
+
+    /**
+     * Getter permettant d'obtenir le nom de la carte.
+     * 
+     * @return Nom de la carte.
+     */
     public String getNom() {
         return nom;
     }
 
+    /**
+     * Setter permettant d'affecter un nom à la carte.
+     * 
+     * @param nom Nom de la carte.
+     */
     public void setNom(String nom) {
         this.nom = nom;
     }
 
-    public static String getNom(int type, int indiceCarte) {
-        return Carte.getCartes()[type][indiceCarte];
-    }
-
+    /**
+     * Getter permettant d'obtenir le type de la carte.
+     * 
+     * @return Type de la carte.
+     */
     public int getType() {
         return type;
     }
 
-    public static String[][] getCartes() {
-        return nomsDesCartes;
-    }
-
     /**
+     * Surcharge de la methode toString()
+     * 
      * @return String représentant la carte.
      */
     public String toString() {

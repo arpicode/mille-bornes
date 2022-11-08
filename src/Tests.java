@@ -1,7 +1,12 @@
 import java.util.ArrayList;
 
+/**
+ * Classe permettant de déninir des tests.
+ */
 public class Tests {
-        // ----- Tests de la classe Carte
+        /**
+         * Tests de la classe Carte
+         */
         public static void testCarte() {
                 Carte carte1 = new Carte("adazd");
                 Carte carte2 = new Carte("50");
@@ -16,6 +21,9 @@ public class Tests {
                 System.out.println("carte3 devrait être églal à Roue de Secours : " + carte3.toString());
         }
 
+        /**
+         * Tests de la classe PileCarte.
+         */
         public static void testPileCarte() {
                 ArrayList<Carte> cartes = new ArrayList<Carte>();
                 cartes.add(new Carte("Feu Vert"));
@@ -33,6 +41,9 @@ public class Tests {
                 System.out.println("pioche après mélange : " + pioche);
         }
 
+        /**
+         * Tests de la classe Configuration.
+         */
         public static void testConfiguration() {
                 ArrayList<String> ligneCartes1 = Configuration.parse("config.txt");
                 afficheTest("config.txt devrait avoir 22 lignes de cartes", (ligneCartes1.size() == 22));
@@ -43,6 +54,9 @@ public class Tests {
                 System.out.println(ligneCartes2);
         }
 
+        /**
+         * Tests de la classe Joueur.
+         */
         public static void testJoueur() {
                 Joueur nicolas = new JoueurHumain("Nicolas", 40);
                 Joueur lea = new JoueurHumain("Lea", 12);

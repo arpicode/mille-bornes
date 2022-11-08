@@ -1,7 +1,12 @@
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.util.regex.Pattern;
 
+/**
+ * Classe qui définie un joueur humain.
+ */
 public class JoueurHumain extends Joueur {
+    private static Scanner scanner = new Scanner(System.in);
 
     /**
      * Constructeur d'un joueur humain.
@@ -58,53 +63,40 @@ public class JoueurHumain extends Joueur {
     }
 
     public int choisirAction() {
-        String input;
-        int choix = 0;
+        String messageErreur = "Oops, je me suis trompé(e) !\n\n";
+        String input = null;
+        String regex = "^[1-2]$";
 
         do {
             this.parler("Je choisis de 1-[Jouer une Carte] 2-[Passer] : ");
-            input = System.console().readLine();
+            input = lireSaisie(regex, messageErreur);
+        } while (input == null);
 
-            if (Pattern.matches("^\\s*[1-2]\\s*$", input)) {
-                choix = Integer.parseInt(input.trim());
-            } else {
-                this.parler("Oops je me suis trompé(e) !\n");
-            }
-
-        } while (choix == 0);
-
-        return choix;
+        return Integer.parseInt(input);
     }
 
     public int choisirCarte() {
-        int choix = 0;
+        String messageErreur = "Oops, je me suis trompé(e) !\n\n";
+        String input = null;
+        String regex = "^[1-" + this.getMain().size() + "]$";
 
         if (!this.getMain().isEmpty()) {
-            String input;
-            String regex = "^\\s*[1-" + this.getMain().size() + "]\\s*$";
-
             do {
                 parler("Je choisis la carte n° ");
-                input = System.console().readLine();
-
-                if (Pattern.matches(regex, input)) {
-                    choix = Integer.parseInt(input.trim());
-                } else {
-                    this.parler("Oops je me suis trompé(e) !\n");
-                }
-            } while (choix == 0);
+                input = lireSaisie(regex, messageErreur);
+            } while (input == null);
         } else {
             parler("Je n'ai pas de cartes en main :(\n");
         }
 
-        return choix;
+        return Integer.parseInt(input);
     }
 
     public int choisirJoueur(ArrayList<Joueur> joueurs) {
-        String input;
-        String regex = "^\\s*[";
+        String messageErreur = "Oops, je me suis trompé(e) !\n\n";
+        String input = null;
+        String regex = "^[";
         String choixDesJoueurs = "";
-        int choix = 0;
 
         // Construire le menu de sélection des joueurs.
         for (Joueur joueur : joueurs) {
@@ -113,21 +105,14 @@ public class JoueurHumain extends Joueur {
                 regex += (joueur.getId() + 1);
             }
         }
-        regex += "]\\s*$";
+        regex += "]$";
 
         do {
             this.parler("Je choisis d'attaquer " + choixDesJoueurs + " : ");
-            input = System.console().readLine();
+            input = lireSaisie(regex, messageErreur);
+        } while (input == null);
 
-            if (Pattern.matches(regex, input)) {
-                choix = Integer.parseInt(input.trim());
-            } else {
-                this.parler("Oops je me suis trompé(e) !\n");
-            }
-
-        } while (choix == 0);
-
-        return choix;
+        return Integer.parseInt(input);
     }
 
     public void passerTour(Defausse defausse) {
@@ -154,6 +139,35 @@ public class JoueurHumain extends Joueur {
             System.out.print((i + 1) + "-" + "[" + this.getMain().get(i) + "] ");
         }
         System.out.println("\n");
+    }
+
+    /**
+     * Lit la une chaîne de caractère saisie dans la console. Elle doit matcher
+     * l'expression regulière regex. S'il y a des groupes capturés ils sont
+     * retournés dans le résultat séparés par ';'.
+     * (i.e. : groupe1;groupe2; ... ;groupeN).
+     * 
+     * @param regex     Expression régulière que doit vérifier la saisie.
+     * @param msgErreur Le message d'erreur à afficher en cas d'erreur de saisie.
+     * @return La chaîne de caratère saisie, ou null si la saisie ne vérifie pas
+     *         l'expression régulière.
+     */
+    private String lireSaisie(String regex, String msgErreur) {
+        String result = null;
+
+        try {
+            String input = scanner.nextLine().trim();
+
+            if (Pattern.matches(regex, input)) {
+                result = input;
+            } else {
+                this.parler(msgErreur);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return result;
     }
 
 }
