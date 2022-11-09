@@ -165,6 +165,14 @@ public class Tests {
                 numeroCarte = lea.chercherCarteCoupFourre(new Carte(Carte.TYPE_ATTAQUE, Carte.CREVE));
                 afficheTest("Lea ne peut pas faire un coup-fourré contre Crevé",
                                 numeroCarte == -1);
+
+                lea.getPile(Joueur.Pile.BATAILLE).push(new Carte(Carte.TYPE_PARADE, Carte.FEU_VERT));
+                lea.getPile(Joueur.Pile.BATAILLE).push(new Carte(Carte.TYPE_ATTAQUE, Carte.CREVE));
+                lea.getPile(Joueur.Pile.BATAILLE).push(new Carte(Carte.TYPE_PARADE, Carte.ROUE_SECOURS));
+                lea.getPile(Joueur.Pile.ETAPE).push(new Carte(Carte.TYPE_ETAPE, Carte.ETAPE_100));
+                lea.getPile(Joueur.Pile.ETAPE).push(new Carte(Carte.TYPE_ETAPE, Carte.ETAPE_100));
+                lea.getPile(Joueur.Pile.ETAPE).push(new Carte(Carte.TYPE_ETAPE, Carte.ETAPE_100));
+                afficheTest("Lea ne peut pas jouer Feu Vert", !lea.peutJouerParade(feuVert));
         }
 
         private static void afficheTest(String message, boolean test) {

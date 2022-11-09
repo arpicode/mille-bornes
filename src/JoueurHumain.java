@@ -71,7 +71,7 @@ public class JoueurHumain extends Joueur {
 
         do {
             this.parler("Je choisis de 1-[Jouer une Carte] 2-[Passer] : ");
-            input = lireSaisie(regex, messageErreur);
+            input = lireChoix(regex, messageErreur);
         } while (input == null);
 
         return Integer.parseInt(input);
@@ -85,7 +85,7 @@ public class JoueurHumain extends Joueur {
         if (!this.getMain().isEmpty()) {
             do {
                 parler("Je choisis la carte n° ");
-                input = lireSaisie(regex, messageErreur);
+                input = lireChoix(regex, messageErreur);
             } while (input == null);
         } else {
             parler("Je n'ai pas de cartes en main :(\n");
@@ -111,7 +111,7 @@ public class JoueurHumain extends Joueur {
 
         do {
             this.parler("Je choisis d'attaquer " + choixDesJoueurs + " : ");
-            input = lireSaisie(regex, messageErreur);
+            input = lireChoix(regex, messageErreur);
         } while (input == null);
 
         return Integer.parseInt(input);
@@ -144,17 +144,15 @@ public class JoueurHumain extends Joueur {
     }
 
     /**
-     * Lit la une chaîne de caractère saisie dans la console. Elle doit matcher
-     * l'expression regulière regex. S'il y a des groupes capturés ils sont
-     * retournés dans le résultat séparés par ';'.
-     * (i.e. : groupe1;groupe2; ... ;groupeN).
+     * Lit la une chaîne de caractère saisie dans la console. Les choix possibles
+     * doivent vérifier l'expression régulière passée en entrée.
      * 
-     * @param regex     Expression régulière que doit vérifier la saisie.
+     * @param regex     Expression régulière qui doit vérifier la saisie du choix.
      * @param msgErreur Le message d'erreur à afficher en cas d'erreur de saisie.
      * @return La chaîne de caratère saisie, ou null si la saisie ne vérifie pas
      *         l'expression régulière.
      */
-    private String lireSaisie(String regex, String msgErreur) {
+    private String lireChoix(String regex, String msgErreur) {
         String result = null;
 
         try {

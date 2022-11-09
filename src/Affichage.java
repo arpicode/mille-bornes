@@ -87,7 +87,7 @@ public class Affichage {
      */
     public static String saisieNomEtAgeJoueur(int numeroJoueur) {
         String input = null;
-        String regex = "^(\\p{L}+[-]{0,1}\\p{L}+)\\s+(\\d+)";
+        String regex = "^(\\p{L}+[-]{0,1}\\p{L}+)\\s+(\\d+)$";
         String error = "Erreur de saisie !";
 
         do {
@@ -100,7 +100,7 @@ public class Affichage {
     }
 
     /**
-     * Affiche au joueur que c'est son tour de jouer.
+     * Affiche le joueur dont c'est le tour de jouer.
      * 
      * @param joueur Joueur.
      */

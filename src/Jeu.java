@@ -23,7 +23,6 @@ public class Jeu {
     private Defausse defausse;
     private ArrayList<String> carteParsees;
     private ArrayList<Joueur> joueurs;
-    private boolean estTermine;
 
     /**
      * Constructeur qui permet d'instancier le jeu.
@@ -38,7 +37,6 @@ public class Jeu {
         this.piocheMeteo = new Pioche();
         this.defausse = new Defausse();
         this.joueurs = new ArrayList<Joueur>();
-        this.estTermine = false;
 
         if (!this.initialiser()) {
             Affichage.message("Impossible d'initialiser le jeu ! Vérifiez le fichier de configuration.");
@@ -50,13 +48,14 @@ public class Jeu {
      * Démarre une partie de Mille Bornes.
      */
     public void demarrer() {
-        boolean aPasseTour;
+        boolean aPasseTour = false;
+        boolean estMancheTerminee = false;
         int toursPassesConsecutifs = 0;
 
         this.distribuerCartes();
 
         // Boucle de jeu
-        while (!this.estTermine) {
+        while (!estMancheTerminee) {
             Affichage.clearScreen();
             // Annoncer le tour du joueur
             Affichage.annoncerJoueur(joueurs.get(this.idJoueurCourant));
@@ -80,21 +79,21 @@ public class Jeu {
                 toursPassesConsecutifs = 0;
             }
 
-            // Le joueur a fini son tour, regarder s'il a atteind les 1000 Bornes
+            // Le joueur a fini son tour, regarder s'il a atteint les 1000 Bornes.
             if (joueurs.get(this.idJoueurCourant).getKmParcourus() == 1000) {
-                estTermine = true;
+                estMancheTerminee = true;
             } else {
                 // S'il n'y a plus de carte dans la pioche ET que tout le monde a passé son
-                // tour
+                // tour.
                 if (this.pioche.size() == 0 && toursPassesConsecutifs == nbJoueurs) {
-                    estTermine = true;
+                    estMancheTerminee = true;
                 } else {
                     if (joueurs.get(this.idJoueurCourant) instanceof JoueurHumain) {
                         Affichage.attendreJoueur(joueurs.get(this.idJoueurCourant));
                     }
 
-                    // Passer au joueur suivant. Si un joueur a joué une botte, c'est à lui de
-                    // jouer.
+                    // Si un joueur a joué une botte, c'est à lui de jouer, si non,
+                    // passer au joueur suivant.
                     int idJoueurJoueBotte = chercherJoueurJoueBotte();
                     if (idJoueurJoueBotte != -1) {
                         this.idJoueurCourant = idJoueurJoueBotte;
@@ -107,29 +106,36 @@ public class Jeu {
         }
 
         if (this.pioche.size() == 0 && toursPassesConsecutifs == nbJoueurs) {
-            Affichage.message("\nTout le monde a passé son tour, la partie est terminée !\n");
+            Affichage.message("\nTout le monde a passé son tour, la manche est terminée !\n");
         } else {
-            Affichage.message("\nLa partie est terminée !\n");
+            Affichage.message("\nLa manche est terminée !\n");
         }
 
-        ArrayList<Joueur> joueursClasses = calculerScoresFinaux();
+        ArrayList<Joueur> joueursClasses = calculerScoresManche();
         Affichage.scoreFinalManche(joueursClasses);
     }
 
     /**
-     * Calculer le score final des joueurs et déterminer les gagnants. Les
-     * gagnants sont ceux avec le plus grand Km parcourus par forcement ceux
+     * Calculer le score des joueurs pour la manche et déterminer les gagnants.
+     * Les gagnants sont ceux avec le plus grand Km parcourus par forcement ceux
      * avec le plus gros score.
      * 
      * @return Les joueurs triés par Km parcourus décroissant.
      */
-    public ArrayList<Joueur> calculerScoresFinaux() {
-        ArrayList<Joueur> tmp = new ArrayList<Joueur>();
+    public ArrayList<Joueur> calculerScoresManche() {
+        int nbJoueursSansEtape = 0;
+        ArrayList<Joueur> tmpJoueurs = new ArrayList<Joueur>();
+
         for (Joueur joueur : joueurs) {
-            tmp.add(joueur);
+            tmpJoueurs.add(joueur);
+            // Compter les joueurs sans étapes.
+            if (joueur.getPile(Joueur.Pile.ETAPE).isEmpty()) {
+                nbJoueursSansEtape++;
+            }
         }
 
-        tmp.sort((j1, j2) -> { // tri décroissant des joueurs par leur score.
+        // Tri décroissant des joueurs par leur Km parcourus.
+        tmpJoueurs.sort((j1, j2) -> {
             if (j1.getKmParcourus() == j2.getKmParcourus())
                 return 0;
             if (j1.getKmParcourus() < j2.getKmParcourus())
@@ -138,14 +144,8 @@ public class Jeu {
                 return -1;
         });
 
-        int plusGrosKm = tmp.get(0).getKmParcourus();
-        int nbJoueursSansEtape = 0;
-        for (Joueur joueur : tmp) {
-            // Regarder si le joueur est "fanny" (pas d'étape)
-            if (joueur.getPile(Joueur.Pile.ETAPE).isEmpty()) {
-                nbJoueursSansEtape++;
-            }
-
+        int plusGrosKm = tmpJoueurs.get(0).getKmParcourus();
+        for (Joueur joueur : tmpJoueurs) {
             // Ajouter les KmParcourus au score.
             joueur.mettreAJourScore(joueur.getKmParcourus());
 
@@ -162,29 +162,28 @@ public class Jeu {
                     }
                 }
             }
-        }
 
-        // S'il y a au moins 1 joueur sans étapes donner des points bonus a tous
-        // les autres joueurs avec des étapes
-        if (nbJoueursSansEtape > 1) {
-            for (Joueur joueur : tmp) {
+            // S'il y a au moins 1 joueur sans étapes donner les points bonus si
+            // le joueur a joué des étapes.
+            if (nbJoueursSansEtape > 1) {
                 if (!joueur.getPile(Joueur.Pile.ETAPE).isEmpty()) {
                     joueur.mettreAJourScore(Jeu.POINTS_BONUS_NON_FANNY);
                 }
             }
+
         }
 
         // Les points rapportés pas les bottes et coup-fourré sont déjà comptés
         // au moment où elles sont jouées.
 
-        return tmp;
+        return tmpJoueurs;
     }
 
     /**
      * Initialise les attributs du jeu
      */
     private boolean initialiser() {
-        boolean estInitialise = true;
+        boolean estInitialise = false;
         this.nbJoueurs = Affichage.saisieNombreJoueurs();
 
         /*
@@ -206,7 +205,7 @@ public class Jeu {
         this.idJoueurCourant = idDuPlusJeuneJoueur();
 
         // Initialiser les pioches.
-        estInitialise &= this.initialiserPioches();
+        estInitialise = this.initialiserPioches();
 
         return estInitialise;
     }
