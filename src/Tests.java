@@ -10,7 +10,7 @@ public class Tests {
         }
 
         /**
-         * Tests de la classe Carte
+         * Tests de la classe Carte.
          */
         public static void testCarte() {
                 Carte carte1 = new Carte("adazd");
@@ -20,10 +20,11 @@ public class Tests {
                 afficheTest("carte1 devrait être non null", (carte1 != null));
                 afficheTest("carte1 devrait être une carte non valide", (!carte1.estValide()));
 
-                System.out.println("carte2 devrait être églal à 50 : " + carte2.toString());
+                afficheTest("carte2 devrait être églale à 50", carte2.estEgale(Carte.TYPE_ETAPE, Carte.ETAPE_50));
                 afficheTest("carte2 devrait être une carte valide", (carte2.estValide()));
 
-                System.out.println("carte3 devrait être églal à Roue de Secours : " + carte3.toString());
+                afficheTest("carte3 devrait être églale à Roue de Secours",
+                                carte3.estEgale(Carte.TYPE_PARADE, Carte.ROUE_SECOURS));
         }
 
         /**
@@ -55,6 +56,7 @@ public class Tests {
 
                 ArrayList<String> ligneCartes2 = Configuration.parse("testFiles/config_test2.txt");
                 afficheTest("config_test2.txt devrait avoir 7 lignes de cartes", (ligneCartes2.size() == 7));
+
                 System.out.println("Lignes trouvées dans config_test2.txt");
                 System.out.println(ligneCartes2);
         }
@@ -65,7 +67,9 @@ public class Tests {
         public static void testJoueur() {
                 Joueur nicolas = new JoueurHumain("Nicolas", 40);
                 Joueur lea = new JoueurHumain("Lea", 12);
-                // Joueur tom = new JoueurHumain("Tom", 13);
+
+                nicolas.toggleAffichageInfos();
+                lea.toggleAffichageInfos();
 
                 Carte feuVert = new Carte(Carte.TYPE_PARADE, Carte.FEU_VERT);
                 Carte finLimiteVitesse = new Carte(Carte.TYPE_PARADE, Carte.FIN_LIMITE_VITESSE);

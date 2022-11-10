@@ -9,7 +9,9 @@ public class Jeu {
     public static final int NB_JOUEURS_MIN = 2;
     public static final int NB_JOUEURS_MAX = 6;
     public static final int TAILLE_MAIN = 6;
+    public static final int LIMITE_METEO = 200;
 
+    public static final int SCORE_MAX = 1000;
     public static final int POINTS_BONUS_GAGNANT = 400;
     public static final int POINTS_BONUS_GAGNANT_SANS_200 = 200;
     public static final int POINTS_BONUS_NON_FANNY = 500;
@@ -48,71 +50,93 @@ public class Jeu {
      * Démarre une partie de Mille Bornes.
      */
     public void demarrer() {
-        boolean aPasseTour = false;
+        boolean estPartieTerminee = false;
         boolean estMancheTerminee = false;
+        boolean aPasseTour = false;
         int toursPassesConsecutifs = 0;
-
-        this.distribuerCartes();
+        int nbManchesJouees = 0;
 
         // Boucle de jeu
-        while (!estMancheTerminee) {
-            Affichage.clearScreen();
-            // Annoncer le tour du joueur
-            Affichage.annoncerJoueur(joueurs.get(this.idJoueurCourant));
-
-            if (joueurs.get(this.idJoueurCourant) instanceof JoueurHumain) {
-                Affichage.attendreJoueur(joueurs.get(this.idJoueurCourant));
-            }
-
-            // Afficher les zones de jeu des joueurs
-            for (Joueur joueur : joueurs) {
-                Affichage.zoneDeJeu(joueur, this.idJoueurCourant);
-            }
-
-            // Donner la main au joueur courant
-            aPasseTour = joueurs.get(this.idJoueurCourant).jouerTour(joueurs, pioche, piocheMeteo, defausse);
-
-            // Comptabiliser le nombre de joueurs qui ont passés consécutivement.
-            if (this.pioche.size() == 0 && aPasseTour) {
-                toursPassesConsecutifs++;
-            } else {
-                toursPassesConsecutifs = 0;
-            }
-
-            // Le joueur a fini son tour, regarder s'il a atteint les 1000 Bornes.
-            if (joueurs.get(this.idJoueurCourant).getKmParcourus() == 1000) {
-                estMancheTerminee = true;
-            } else {
-                // S'il n'y a plus de carte dans la pioche ET que tout le monde a passé son
-                // tour.
-                if (this.pioche.size() == 0 && toursPassesConsecutifs == nbJoueurs) {
-                    estMancheTerminee = true;
-                } else {
-                    if (joueurs.get(this.idJoueurCourant) instanceof JoueurHumain) {
-                        Affichage.attendreJoueur(joueurs.get(this.idJoueurCourant));
-                    }
-
-                    // Si un joueur a joué une botte, c'est à lui de jouer, si non,
-                    // passer au joueur suivant.
-                    int idJoueurJoueBotte = chercherJoueurJoueBotte();
-                    if (idJoueurJoueBotte != -1) {
-                        this.idJoueurCourant = idJoueurJoueBotte;
-                    } else {
-                        this.idJoueurCourant = (this.idJoueurCourant + 1) % nbJoueurs;
-                    }
+        while (!estPartieTerminee) {
+            if (nbManchesJouees > 0) {
+                initialiserPioches();
+                for (Joueur joueur : joueurs) {
+                    joueur.reset();
                 }
             }
 
-        }
+            this.distribuerCartes();
+            estMancheTerminee = false;
+            Affichage.message("Début de la manche n° " + nbManchesJouees);
 
-        if (this.pioche.size() == 0 && toursPassesConsecutifs == nbJoueurs) {
-            Affichage.message("\nTout le monde a passé son tour, la manche est terminée !\n");
-        } else {
-            Affichage.message("\nLa manche est terminée !\n");
-        }
+            while (!estMancheTerminee) {
+                Affichage.clearScreen();
+                // Annoncer le tour du joueur
+                Affichage.annoncerJoueur(joueurs.get(this.idJoueurCourant));
 
-        ArrayList<Joueur> joueursClasses = calculerScoresManche();
-        Affichage.scoreFinalManche(joueursClasses);
+                if (joueurs.get(this.idJoueurCourant) instanceof JoueurHumain) {
+                    Affichage.attendre(joueurs.get(this.idJoueurCourant));
+                }
+
+                // Afficher les zones de jeu des joueurs
+                for (Joueur joueur : joueurs) {
+                    Affichage.zoneDeJeu(joueur, this.idJoueurCourant);
+                }
+
+                // Donner la main au joueur courant
+                aPasseTour = joueurs.get(this.idJoueurCourant).jouerTour(joueurs, pioche, piocheMeteo, defausse);
+
+                // Comptabiliser le nombre de joueurs qui ont passés consécutivement.
+                if (this.pioche.size() == 0 && aPasseTour) {
+                    toursPassesConsecutifs++;
+                } else {
+                    toursPassesConsecutifs = 0;
+                }
+
+                // Le joueur a fini son tour, regarder s'il a atteint les 1000 Bornes.
+                if (joueurs.get(this.idJoueurCourant).getKmParcourus() == 1000) {
+                    estMancheTerminee = true;
+                } else {
+                    // S'il n'y a plus de carte dans la pioche ET que tout le monde a passé son
+                    // tour.
+                    if (this.pioche.size() == 0 && toursPassesConsecutifs == nbJoueurs) {
+                        estMancheTerminee = true;
+                    } else {
+                        if (joueurs.get(this.idJoueurCourant) instanceof JoueurHumain) {
+                            Affichage.attendre(joueurs.get(this.idJoueurCourant));
+                        }
+
+                        // Si un joueur a joué une botte, c'est à lui de jouer, si non,
+                        // passer au joueur suivant.
+                        int idJoueurJoueBotte = chercherJoueurJoueBotte();
+                        if (idJoueurJoueBotte != -1) {
+                            this.idJoueurCourant = idJoueurJoueBotte;
+                        } else {
+                            this.idJoueurCourant = (this.idJoueurCourant + 1) % nbJoueurs;
+                        }
+                    }
+                }
+
+            }
+
+            if (this.pioche.size() == 0 && toursPassesConsecutifs == nbJoueurs) {
+                Affichage.message("\nTout le monde a passé son tour, la manche est terminée !\n");
+            } else {
+                Affichage.message("\nLa manche est terminée !\n");
+            }
+
+            ArrayList<Joueur> joueursClasses = calculerScoresManche();
+            estPartieTerminee = joueursClasses.get(0).getScore() >= Jeu.SCORE_MAX;
+
+            if (!estPartieTerminee) {
+                Affichage.scoreManche(joueursClasses);
+                Affichage.attendre(null);
+            } else {
+                Affichage.message("\nLa partie est terminée !\n");
+                Affichage.scoreManche(joueursClasses);
+            }
+            nbManchesJouees++;
+        }
     }
 
     /**
@@ -153,7 +177,6 @@ public class Jeu {
             if (nbJoueursSansEtape != nbJoueurs) {
                 // Ajouter les points pour avoir gagné
                 if (joueur.getKmParcourus() == plusGrosKm) {
-                    joueur.setEstGagnant(true);
                     joueur.mettreAJourScore(Jeu.POINTS_BONUS_GAGNANT);
                     // Regarder si le gagnant n'a pas étapes 200.
                     if (!joueur.getPile(Joueur.Pile.ETAPE).contient(Carte.getNom(Carte.TYPE_ETAPE, Carte.ETAPE_200))) {
@@ -202,7 +225,7 @@ public class Jeu {
         }
 
         // Initialiser le joueur courant en fonction de l'âge des joueurs.
-        this.idJoueurCourant = idDuPlusJeuneJoueur();
+        this.idJoueurCourant = idPlusJeuneJoueur();
 
         // Initialiser les pioches.
         estInitialise = this.initialiserPioches();
@@ -226,7 +249,7 @@ public class Jeu {
      * 
      * @return Id du plus jeune joueur.
      */
-    private int idDuPlusJeuneJoueur() {
+    private int idPlusJeuneJoueur() {
         int ageMin = Integer.MAX_VALUE;
         int id = 0;
         for (int i = 0; i < this.joueurs.size(); i++) {

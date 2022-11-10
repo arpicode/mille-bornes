@@ -30,7 +30,7 @@ public abstract class Joueur {
     private int score; // Le score final du joueur.
     private boolean estMeteoResolue; // Indique si une carte météo à été résolue.
     private boolean aJoueBotte; // Indique si le joueur vient de jouer une Botte.
-    private boolean estGagnant; // Indique si le joueur est le gagnant.
+    private boolean estInfosAffichees; // Indique si les informations sont afficher.
 
     /**
      * Constructeur d'un joueur.
@@ -46,7 +46,7 @@ public abstract class Joueur {
         this.score = 0;
         this.estMeteoResolue = false;
         this.aJoueBotte = false;
-        this.estGagnant = false;
+        this.estInfosAffichees = true;
         nbJoueur++;
     }
 
@@ -240,11 +240,11 @@ public abstract class Joueur {
         if (peutRouler(this)) {
             if (this.estAttaquePar(Carte.LIMITE_VITESSE) && Integer.parseInt(carteEtape.getNom()) > 50) {
                 afficherInfo("Vous ne pouvez pas jouer une carte Étape > 50. Vous avez",
-                        new Carte(Carte.TYPE_ATTAQUE, Carte.LIMITE_VITESSE));
+                        Carte.getNom(Carte.TYPE_ATTAQUE, Carte.LIMITE_VITESSE));
                 return false;
             } else if (Integer.parseInt(carteEtape.getNom()) == 200 && !peutJouerEtape200()) {
                 afficherInfo("Vous ne pouvez pas jouer plus de 2 Étapes",
-                        new Carte(Carte.TYPE_ETAPE, Carte.ETAPE_200));
+                        Carte.getNom(Carte.TYPE_ETAPE, Carte.ETAPE_200));
                 return false;
             } else if (Integer.parseInt(carteEtape.getNom()) + kmParcourus > 1000) {
                 afficherInfo("Vous ne pouvez pas dépasser les 1000 Km.");
@@ -333,7 +333,7 @@ public abstract class Joueur {
                     if (carte.estEgale(Carte.TYPE_ATTAQUE, Carte.LIMITE_VITESSE)
                             || carte.estEgale(Carte.TYPE_ATTAQUE, Carte.FEU_ROUGE)) {
                         afficherInfo(joueur.getNom() + " est protégé par",
-                                new Carte(Carte.TYPE_BOTTE, Carte.PRIORITAIRE));
+                                Carte.getNom(Carte.TYPE_BOTTE, Carte.PRIORITAIRE));
                         return false;
                     }
                     // Si le joueur à la botte Citerne
@@ -342,7 +342,7 @@ public abstract class Joueur {
                     // Il ne peut pas être attaqué par Panne d'Essence.
                     if (carte.estEgale(Carte.TYPE_ATTAQUE, Carte.PANNE_ESSENCE)) {
                         afficherInfo(joueur.getNom() + " est protégé par",
-                                new Carte(Carte.TYPE_BOTTE, Carte.CITERNE));
+                                Carte.getNom(Carte.TYPE_BOTTE, Carte.CITERNE));
                         return false;
                     }
                     // Si le joueur à la botte Increvable.
@@ -351,7 +351,7 @@ public abstract class Joueur {
                     // Il ne peut pas être attaqué par Crevé
                     if (carte.estEgale(Carte.TYPE_ATTAQUE, Carte.CREVE)) {
                         afficherInfo(joueur.getNom() + " est protégé par",
-                                new Carte(Carte.TYPE_BOTTE, Carte.INCREVABLE));
+                                Carte.getNom(Carte.TYPE_BOTTE, Carte.INCREVABLE));
                         return false;
                     }
                     // Si le joueur à la botte As du Volant
@@ -360,7 +360,7 @@ public abstract class Joueur {
                     // Il ne peut pas être attaqué par Accident
                     if (carte.estEgale(Carte.TYPE_ATTAQUE, Carte.ACCIDENT)) {
                         afficherInfo(joueur.getNom() + " est protégé par",
-                                new Carte(Carte.TYPE_BOTTE, Carte.AS_VOLANT));
+                                Carte.getNom(Carte.TYPE_BOTTE, Carte.AS_VOLANT));
                         return false;
                     }
                 }
@@ -411,7 +411,7 @@ public abstract class Joueur {
      */
     public boolean peutJouerParade(Carte carteParade) {
         // Cas ou la carte parade est un Feu Vert.
-        if (carteParade.getNom().compareTo(Carte.getNom(Carte.TYPE_PARADE, Carte.FEU_VERT)) == 0) {
+        if (carteParade.estEgale(Carte.TYPE_PARADE, Carte.FEU_VERT)) {
             // Si la pile Bataille est vide
             // OU le joueur est attaqué par une attaque Feu Rouge
             // OU le joueur ne peut pas roulez ET qu'il n'est pas attaqué.
@@ -422,28 +422,28 @@ public abstract class Joueur {
             }
             afficherInfo("Vous ne pouvez pas jouer", carteParade);
             // Si non, si la carte parade est la carte Fin Limite de Vitesse.
-        } else if (carteParade.getNom().compareTo(Carte.getNom(Carte.TYPE_PARADE, Carte.FIN_LIMITE_VITESSE)) == 0) {
+        } else if (carteParade.estEgale(Carte.TYPE_PARADE, Carte.FIN_LIMITE_VITESSE)) {
             // Si le joueur est attaqué par une attaque Limite de Vitesse.
             if (this.estAttaquePar(Carte.LIMITE_VITESSE)) {
                 return true;
             }
             afficherInfo("Vous n'être pas attaqué(e) par", new Carte(Carte.TYPE_ATTAQUE, Carte.LIMITE_VITESSE));
             // Si non, si la carte parade est la carte Essence.
-        } else if (carteParade.getNom().compareTo(Carte.getNom(Carte.TYPE_PARADE, Carte.ESSENCE)) == 0) {
+        } else if (carteParade.estEgale(Carte.TYPE_PARADE, Carte.ESSENCE)) {
             // Si le joueur est attaqué par une attaque Panne d'Essence.
             if (this.estAttaquePar(Carte.PANNE_ESSENCE)) {
                 return true;
             }
             afficherInfo("Vous n'être pas attaqué(e) par", new Carte(Carte.TYPE_ATTAQUE, Carte.PANNE_ESSENCE));
             // Si non, si la carte parade est une Roue de Secours.
-        } else if (carteParade.getNom().compareTo(Carte.getNom(Carte.TYPE_PARADE, Carte.ROUE_SECOURS)) == 0) {
+        } else if (carteParade.estEgale(Carte.TYPE_PARADE, Carte.ROUE_SECOURS)) {
             // Si le joueur est attaqué par une attaque Crevé.
             if (this.estAttaquePar(Carte.CREVE)) {
                 return true;
             }
             afficherInfo("Vous n'être pas attaqué(e) par", new Carte(Carte.TYPE_ATTAQUE, Carte.CREVE));
             // Si non, si la carte parade est une Réparation.
-        } else if (carteParade.getNom().compareTo(Carte.getNom(Carte.TYPE_PARADE, Carte.REPARATION)) == 0) {
+        } else if (carteParade.estEgale(Carte.TYPE_PARADE, Carte.REPARATION)) {
             // Si le joueur est attaqué par une attaque Accident.
             if (this.estAttaquePar(Carte.ACCIDENT)) {
                 return true;
@@ -469,7 +469,7 @@ public abstract class Joueur {
         parler("Je joue la botte [" + carteBotte + "]. Et je vais rejouer !\n");
 
         // Si le joueur joue la botte Prioritaire.
-        if (carteBotte.getNom().compareTo(Carte.getNom(Carte.TYPE_BOTTE, Carte.PRIORITAIRE)) == 0) {
+        if (carteBotte.estEgale(Carte.TYPE_BOTTE, Carte.PRIORITAIRE)) {
             if (this.estAttaquePar(Carte.LIMITE_VITESSE)) {
                 parler("J'annule l'attaque [" + defausse.push(getPile(Pile.VITESSE).pop()) + "] !\n");
             }
@@ -478,17 +478,17 @@ public abstract class Joueur {
                 parler("J'annule l'attaque [" + defausse.push(getPile(Pile.BATAILLE).pop()) + "] !\n");
             }
             // Si non, si le joueur joue la botte Citerne.
-        } else if (carteBotte.getNom().compareTo(Carte.getNom(Carte.TYPE_BOTTE, Carte.CITERNE)) == 0) {
+        } else if (carteBotte.estEgale(Carte.TYPE_BOTTE, Carte.CITERNE)) {
             if (this.estAttaquePar(Carte.PANNE_ESSENCE)) {
                 parler("J'annule l'attaque [" + defausse.push(getPile(Pile.BATAILLE).pop()) + "] !\n");
             }
             // Si non, si le joueur joue la botte Increvable.
-        } else if (carteBotte.getNom().compareTo(Carte.getNom(Carte.TYPE_BOTTE, Carte.INCREVABLE)) == 0) {
+        } else if (carteBotte.estEgale(Carte.TYPE_BOTTE, Carte.INCREVABLE)) {
             if (this.estAttaquePar(Carte.CREVE)) {
                 parler("J'annule l'attaque [" + defausse.push(getPile(Pile.BATAILLE).pop()) + "] !\n");
             }
             // Si non, si le joueur joue la botte As du Volant.
-        } else if (carteBotte.getNom().compareTo(Carte.getNom(Carte.TYPE_BOTTE, Carte.AS_VOLANT)) == 0) {
+        } else if (carteBotte.estEgale(Carte.TYPE_BOTTE, Carte.AS_VOLANT)) {
             if (this.estAttaquePar(Carte.ACCIDENT)) {
                 parler("J'annule l'attaque [" + defausse.push(getPile(Pile.BATAILLE).pop()) + "] !\n");
             }
@@ -552,6 +552,25 @@ public abstract class Joueur {
     }
 
     /**
+     * Permet de basculer l'affichage des infos sur true ou false.
+     */
+    public void toggleAffichageInfos() {
+        this.estInfosAffichees = !this.estInfosAffichees;
+    }
+
+    /**
+     * Remet à zéro le joueur pour pouvoir commencer une nouvelle manche.
+     */
+    public void reset() {
+        this.main.clear();
+        for (Pile pile : Pile.values()) {
+            this.zoneDeJeu.get(pile).clear();
+        }
+        this.kmParcourus = 0;
+        this.estMeteoResolue = false;
+    }
+
+    /**
      * Permet de savoir si un joueur est attaqué par autre chose qu'une Limite
      * de Vitesse.
      * 
@@ -559,8 +578,8 @@ public abstract class Joueur {
      * @return true si le joueur est attaqué, false si non.
      */
     private boolean estAttaque(Joueur joueur) {
-        Boolean estAttaque = !joueur.getZoneDeJeu().get(Pile.BATAILLE).isEmpty()
-                && joueur.getZoneDeJeu().get(Pile.BATAILLE).peek().getType() == Carte.TYPE_ATTAQUE;
+        Boolean estAttaque = !joueur.getPile(Pile.BATAILLE).isEmpty()
+                && joueur.getPile(Pile.BATAILLE).peek().getType() == Carte.TYPE_ATTAQUE;
 
         return estAttaque;
     }
@@ -574,16 +593,14 @@ public abstract class Joueur {
      * @return true si le joueur est attaqué par la carte, false si non.
      */
     private boolean estAttaquePar(int indiceCarteAttaque) {
-        String nomCarteAttaque = Carte.getNom(Carte.TYPE_ATTAQUE, indiceCarteAttaque);
-
-        if (!this.getZoneDeJeu().get(Pile.BATAILLE).isEmpty()) {
-            if (this.getPile(Pile.BATAILLE).peek().getNom().compareTo(nomCarteAttaque) == 0) {
+        if (!this.getPile(Pile.BATAILLE).isEmpty()) {
+            if (this.getPile(Pile.BATAILLE).peek().estEgale(Carte.TYPE_ATTAQUE, indiceCarteAttaque)) {
                 return true;
             }
         }
 
-        if (!this.getZoneDeJeu().get(Pile.VITESSE).isEmpty()) {
-            if (this.getPile(Pile.VITESSE).peek().getNom().compareTo(nomCarteAttaque) == 0) {
+        if (!this.getPile(Pile.VITESSE).isEmpty()) {
+            if (this.getPile(Pile.VITESSE).peek().estEgale(Carte.TYPE_ATTAQUE, indiceCarteAttaque)) {
                 return true;
             }
         }
@@ -598,10 +615,9 @@ public abstract class Joueur {
      * @return true si le joueur peut rouler, false si non.
      */
     private boolean peutRouler(Joueur joueur) {
-        boolean possedeFeuVert = !joueur.getZoneDeJeu().get(Pile.BATAILLE).isEmpty()
-                && joueur.getZoneDeJeu().get(Pile.BATAILLE).peek().getNom()
-                        .compareTo(Carte.getNom(Carte.TYPE_PARADE, Carte.FEU_VERT)) == 0;
-        boolean possedePrioritaire = joueur.getZoneDeJeu().get(Pile.BOTTE)
+        boolean possedeFeuVert = !joueur.getPile(Pile.BATAILLE).isEmpty()
+                && joueur.getPile(Pile.BATAILLE).peek().estEgale(Carte.TYPE_PARADE, Carte.FEU_VERT);
+        boolean possedePrioritaire = joueur.getPile(Pile.BOTTE)
                 .contient(Carte.getNom(Carte.TYPE_BOTTE, Carte.PRIORITAIRE));
 
         return !estAttaque(joueur) && (possedeFeuVert || possedePrioritaire);
@@ -614,17 +630,25 @@ public abstract class Joueur {
      * @return true si possible, false si non.
      */
     private boolean peutJouerEtape200() {
-        return this.getZoneDeJeu().get(Pile.ETAPE)
+        return this.getPile(Pile.ETAPE)
                 .nombreCartes(Carte.getNom(Carte.TYPE_ETAPE, Carte.ETAPE_200)) < 2;
     }
 
-    private static void afficherInfo(String message) {
-        System.out.println(Affichage.Color.GRAY + message + Affichage.Color.END);
+    private void afficherInfo(String message) {
+        if (estInfosAffichees)
+            System.out.println(Affichage.Color.GRAY + message + Affichage.Color.END);
     }
 
-    private static void afficherInfo(String message, Carte carte) {
-        System.out.println(Affichage.Color.GRAY + message + Affichage.Color.END
-                + " [" + carte + "].");
+    private void afficherInfo(String message, Carte carte) {
+        if (estInfosAffichees)
+            System.out.println(Affichage.Color.GRAY + message + Affichage.Color.END
+                    + " [" + carte + "].");
+    }
+
+    private void afficherInfo(String message, String nomCarte) {
+        if (estInfosAffichees)
+            System.out.println(Affichage.Color.GRAY + message + Affichage.Color.END
+                    + " [" + new Carte(nomCarte) + "].");
     }
 
     /**
@@ -718,39 +742,12 @@ public abstract class Joueur {
     }
 
     /**
-     * Getter permettant de savoir si le joueur à fait un Coup-fourré.
-     * 
-     * @return true si un Coup-fourré a été joué, false si non.
-     */
-    public boolean estGagnant() {
-        return this.estGagnant;
-    }
-
-    /**
-     * Setter permettant d'affecter la valeur estGagnant du joueur.
-     * 
-     * @param value true ou false
-     */
-    public void setEstGagnant(boolean value) {
-        this.estGagnant = value;
-    }
-
-    /**
      * Getter permettant d'obtenir la main du joueur.
      * 
      * @return Main du joueur.
      */
     public ArrayList<Carte> getMain() {
         return main;
-    }
-
-    /**
-     * Getter permettant d'obtenir la zone de jeu du joueur.
-     * 
-     * @return La zone de jeu du joueur.
-     */
-    public EnumMap<Pile, PileCartes> getZoneDeJeu() {
-        return zoneDeJeu;
     }
 
     /**

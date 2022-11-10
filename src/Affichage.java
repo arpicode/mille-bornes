@@ -127,17 +127,13 @@ public class Affichage {
     }
 
     /**
-     * Affiche le score final de la manche de tous les joueurs.
+     * Affiche le score de la manche de tous les joueurs.
      * 
      * @param joueurs Joueurs trié par Km parcourus décroissant.
      */
-    public static void scoreFinalManche(ArrayList<Joueur> joueurs) {
+    public static void scoreManche(ArrayList<Joueur> joueurs) {
         for (int i = 0; i < joueurs.size(); i++) {
-            System.out.print(Color.YELLOW + (i + 1) + Color.END + " - " + joueurs.get(i).getNom() + " ");
-            if (joueurs.get(i).estGagnant()) {
-                System.out.print(Color.LIGHT_GREEN + "Gagnant ! " + Color.END);
-            }
-            System.out.print(":\t");
+            System.out.print(Color.YELLOW + (i + 1) + Color.END + " - " + joueurs.get(i).getNom() + " :\t");
             System.out.println(Color.BOLD + joueurs.get(i).getScore() + Color.END);
         }
     }
@@ -155,10 +151,15 @@ public class Affichage {
      * Affiche un message demandant au joueur d'appuyer sur ENTRER pour
      * continuer.
      * 
-     * @param joueur joueur qui doit agir.
+     * @param joueur Joueur qui doit agir ou null.
      */
-    public static void attendreJoueur(Joueur joueur) {
-        System.out.println(joueur.getNom() + Color.YELLOW + ", appuie sur ENTRER pour continuer..." + Color.END);
+    public static void attendre(Joueur joueur) {
+        if (joueur != null) {
+            System.out.println(joueur.getNom() + Color.YELLOW + ", appuie sur ENTRER pour continuer..." + Color.END);
+
+        } else {
+            System.out.println(Color.YELLOW + "Appuyez sur ENTRER pour continuer..." + Color.END);
+        }
         try {
             System.in.read();
             scanner.nextLine();
@@ -213,7 +214,7 @@ public class Affichage {
      */
     private static void affichePile(Joueur joueur, String nom, Joueur.Pile pile) {
         System.out.print("  " + nom + " : ");
-        for (Carte carte : joueur.getZoneDeJeu().get(pile)) {
+        for (Carte carte : joueur.getPile(pile)) {
             System.out.print("[" + carte + "]");
         }
         System.out.println();
@@ -238,7 +239,7 @@ public class Affichage {
             String input = scanner.nextLine().trim();
             final Matcher matcher = pattern.matcher(input);
 
-            while (matcher.find()) {
+            if (matcher.find()) {
                 if (matcher.groupCount() == 0) {
                     result = matcher.group(0);
                 } else {
@@ -256,7 +257,7 @@ public class Affichage {
 
         if (result.isEmpty()) {
             result = null;
-            System.err.println(msgErreur);
+            System.out.println(msgErreur);
         }
 
         return result;
