@@ -8,6 +8,9 @@ import java.util.Stack;
  */
 public class PileCartes extends Stack<Carte> {
 
+    /**
+     * Constructeur qui permet d'instancier une pile de cartes.
+     */
     public PileCartes() {
         super();
     }

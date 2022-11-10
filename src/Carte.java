@@ -4,13 +4,33 @@
  * @author Les Bornés
  */
 public class Carte {
+    /**
+     * Valeur associée aux cartes de type Étape.
+     */
     public static final int TYPE_ETAPE = 0;
+
+    /**
+     * Valeur associée aux cartes de type Attaque.
+     */
     public static final int TYPE_ATTAQUE = 1;
+
+    /**
+     * Valeur associée aux cartes de type Parade.
+     */
     public static final int TYPE_PARADE = 2;
+
+    /**
+     * Valeur associée aux cartes de type Botte.
+     */
     public static final int TYPE_BOTTE = 3;
+
+    /**
+     * Valeur associée aux cartes de type Météo.
+     */
     public static final int TYPE_METEO = 4;
 
-    // Indice des cartes dans le tableau nomsDesCartes
+    // Indice des cartes dans le tableau NOMS_DES_CARTES
+    // CHECKSTYLE:OFF
     public static final int ETAPE_25 = 0;
     public static final int ETAPE_50 = 1;
     public static final int ETAPE_75 = 2;
@@ -37,8 +57,10 @@ public class Carte {
     public static final int NEIGE = 0;
     public static final int BEAU_TEMPS = 1;
     public static final int VENT_DOS = 2;
+    // CHECKSTYLE:ON
 
-    /*
+    /**
+     * Les noms des cartes de chaque type.
      * L'ordre des cartes attaques, parade et bottes est important par exemple
      * Feu Rouge est à l'indice 0 et sa parade qui est Feu Vert est aussi à
      * l'indice 0. Il y a un cas particulier avec la botte Prioritaire qui
@@ -47,7 +69,7 @@ public class Carte {
      * Exemple d'utilisation pour obtenir le nom de la carte "Roue de Secours"
      * => Carte.getNom(TYPE_PARADE, ROUE_SECOURS)
      */
-    private static final String[][] nomsDesCartes = new String[][] {
+    private static final String[][] NOMS_DES_CARTES = new String[][] {
             // nomDesCartes[TYPE_ETAPE] => tableau avec des Etapes
             { "25", "50", "75", "100", "200" },
             // nomDesCartes[TYPE_ATTAQUE] => tableau avec des Attaques
@@ -60,8 +82,8 @@ public class Carte {
             { "Neige", "Beau Temps", "Vent dans le Dos" }
     };
 
-    private String nom;
-    private int type;
+    private String nom; // Nom de la carte.
+    private int type; // Type de la carte.
 
     /**
      * Constructeur permettant d'instancier une carte grace à son nom.
@@ -103,10 +125,10 @@ public class Carte {
      * @return le résultat de l'initialisation.
      */
     private boolean initialiserCarte(String nom) {
-        for (int type = 0; type < nomsDesCartes.length; type++) {
-            for (int i = 0; i < nomsDesCartes[type].length; i++) {
-                if (nom.compareToIgnoreCase(nomsDesCartes[type][i]) == 0) {
-                    this.nom = nomsDesCartes[type][i];
+        for (int type = 0; type < NOMS_DES_CARTES.length; type++) {
+            for (int i = 0; i < NOMS_DES_CARTES[type].length; i++) {
+                if (nom.compareToIgnoreCase(NOMS_DES_CARTES[type][i]) == 0) {
+                    this.nom = NOMS_DES_CARTES[type][i];
                     this.type = type;
                     return true;
                 }
@@ -135,7 +157,7 @@ public class Carte {
      * @return Nom de la carte.
      */
     public static String getNom(int type, int indiceCarte) {
-        return nomsDesCartes[type][indiceCarte];
+        return NOMS_DES_CARTES[type][indiceCarte];
     }
 
     /**

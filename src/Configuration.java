@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 public class Configuration {
 
     // Expression régulière qui match une ligne qui commence avec une paire de
-    // valeurs possibles : <nombre_de_cartes>;<nom_de_la_carte>. (Il est permis
+    // valeurs possibles : nombre_de_cartes;nom_de_la_carte. (Il est permis
     // d'avoir des espaces devant la ligne et autour du ';'.)
     private static final String cardRegexp = "^(\\s*\\d+\\s*;\\s*[\\d\\p{L}\\-' ]+[\\d\\p{L}])";
     private static final Pattern cardPattern = Pattern.compile(cardRegexp);
@@ -28,8 +28,8 @@ public class Configuration {
     /**
      * Parse le fichier de configuration.
      * 
-     * @return ArrayList<String> contenant les lignes qui correspondent à une
-     *         paire de : <nombre_de_cartes>;<nom_de_la_carte>.
+     * @return ArrayList contenant les lignes qui correspondent à une
+     *         paire de : nombre_de_cartes;nom_de_la_carte.
      */
     public static ArrayList<String> parse(String fullFileName) {
         ArrayList<String> result = new ArrayList<String>();
@@ -149,12 +149,12 @@ public class Configuration {
 
     /**
      * Vérifie si la ligne contient une chaîne de caractère qui correspond au
-     * format <nombre_de_cartes>;<nom_de_la_carte>. (Cette paire de valeur ne
+     * format nombre_de_cartes;nom_de_la_carte. (Cette paire de valeur ne
      * représente pas forcement une carte valide.)
      * 
      * @param line String ligne à vérifier.
      * @return String correspondant à une paire de valeurs au format
-     *         <nombre_de_cartes>;<nom_de_la_carte>, ou null si le motif n'est
+     *         nombre_de_cartes;nom_de_la_carte, ou null si le motif n'est
      *         pas présent.
      */
     private static String getCardFromLine(String line) {
@@ -171,12 +171,10 @@ public class Configuration {
     /**
      * Teste si la ligne est un commentaire ou null.
      * 
-     * @param line
+     * @param line Une ligne lue dans le fichier de configuration.
      * @return true si c'est un commentaire ou null, false si non.
      */
     private static boolean isComment(String line) {
-        if (line.trim().isEmpty())
-            return true;
-        return line.trim().charAt(0) == '#';
+        return line.trim().isEmpty() || line.trim().charAt(0) == '#';
     }
 }

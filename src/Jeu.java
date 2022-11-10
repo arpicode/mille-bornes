@@ -8,32 +8,66 @@ import java.util.ArrayList;
 public class Jeu {
     public static final int NB_JOUEURS_MIN = 2;
     public static final int NB_JOUEURS_MAX = 6;
+
+    /**
+     * Nombre de carte qu'un joueur peut avoir au maximum à la fin de son tour de
+     * jeu. (Il peut être momentanément à TAILLE_MAIN +1 juste après avoir pioché).
+     */
     public static final int TAILLE_MAIN = 6;
+
+    /**
+     * Nombre de Km nécessaire pour piocher une carte météo.
+     */
     public static final int LIMITE_METEO = 200;
 
+    /**
+     * Nombre de Km à parcourir pour gagné une manche.
+     */
     public static final int SCORE_MAX = 1000;
+
+    /**
+     * Points accordés aux gagnant d'une manche. Les gagnants sont ceux qui
+     * ont parcourus le plus de Km.
+     */
     public static final int POINTS_BONUS_GAGNANT = 400;
+
+    /**
+     * Points accordés aux joueurs qui ont gagné sans jouer d'étapes 200.
+     */
     public static final int POINTS_BONUS_GAGNANT_SANS_200 = 200;
+
+    /**
+     * Points accordés à tous les joueurs qui ont posé des étapes dans le cas ou
+     * au moins un joueur est sans étape à la fin d'une manche.
+     */
     public static final int POINTS_BONUS_NON_FANNY = 500;
+
+    /**
+     * Points accordés à chaque botte posée.
+     */
     public static final int POINTS_BOTTE_POSEE = 100;
+
+    /**
+     * Points accordés à chaque Coup-fourré (se cumule avec POINTS_BOTTE_POSEE).
+     */
     public static final int POINTS_COUP_FOURRE = 300;
 
-    private int nbJoueurs;
-    private int idJoueurCourant;
-    private Pioche pioche;
-    private Pioche piocheMeteo;
-    private Defausse defausse;
-    private ArrayList<String> carteParsees;
-    private ArrayList<Joueur> joueurs;
+    private int nbJoueurs; // Nombre de joueurs jouant au jeu.
+    private int idJoueurCourant; // Id du joueur dont c'est le tour.
+    private Pioche pioche; // Pioche avec les cartes normales du jeu.
+    private Pioche piocheMeteo; // Pioche des cartes météo.
+    private Defausse defausse; // La pile de défausse.
+    private ArrayList<String> carteParsees; // Cartes parsée depuis le fichier de configuration.
+    private ArrayList<Joueur> joueurs; // Les joueurs jouant au jeu.
 
     /**
      * Constructeur qui permet d'instancier le jeu.
      * 
-     * @param configFileName // Fichier de configuration.
+     * @param configFileName Fichier de configuration.
      */
     public Jeu(String configFileName) {
         Affichage.clearScreen();
-        Affichage.nomJeu();
+        Affichage.titreJeu();
         this.carteParsees = Configuration.parse(configFileName); // return un ArrayList de string
         this.pioche = new Pioche();
         this.piocheMeteo = new Pioche();

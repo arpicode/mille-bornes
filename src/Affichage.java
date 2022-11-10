@@ -17,7 +17,8 @@ public class Affichage {
     /**
      * Classe static interne qui défini les couleurs d'affichage de la console.
      */
-    public static class Color {
+    // CHECKSTYLE:OFF
+    public static final class Color {
         public static final String BLACK = "\033[30m";
         public static final String GRAY = "\033[90m";
         public static final String RED = "\033[31m";
@@ -36,11 +37,12 @@ public class Affichage {
         public static final String END = "\033[0m";
         public static final String BOLD = "\033[1m";
     }
+    // CHECKSTYLE:ON
 
     /**
-     * Affiche le nom du jeu : Mille Bornes.
+     * Affiche le titre du jeu : Mille Bornes.
      */
-    public static void nomJeu() {
+    public static void titreJeu() {
         System.out.println(Color.CYAN + " __  __ _ _ _" + Color.LIGHT_RED
                 + "        ____");
         System.out.println(Color.CYAN + "|  \\/  (_) | | ___  " + Color.LIGHT_RED
@@ -83,7 +85,8 @@ public class Affichage {
      * Demander à l'utilisateur de saisir le nom et l'âge d'un joueur jusqu'à ce
      * que la saisie soit valide.
      * 
-     * @return Le nom et l'âge du joueur sous la forme <nom>;<âge>.
+     * @param numeroJoueur Le numéro d'ordre de saisi du joueur.
+     * @return Le nom et l'âge du joueur sous la forme d'une String nom;âge.
      */
     public static String saisieNomEtAgeJoueur(int numeroJoueur) {
         String input = null;

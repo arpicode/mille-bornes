@@ -30,7 +30,8 @@ public abstract class Joueur {
     private int score; // Le score final du joueur.
     private boolean estMeteoResolue; // Indique si une carte météo à été résolue.
     private boolean aJoueBotte; // Indique si le joueur vient de jouer une Botte.
-    private boolean estInfosAffichees; // Indique si les informations sont afficher.
+    private boolean estInfosAffichees; // Indique si les informations sont afficher
+                                       // ou non. Les joueurs peuvent toujours "parler".
 
     /**
      * Constructeur d'un joueur.
@@ -552,7 +553,7 @@ public abstract class Joueur {
     }
 
     /**
-     * Permet de basculer l'affichage des infos sur true ou false.
+     * Active/Désactive l'affichage des infos sur la jouabilité des cartes.
      */
     public void toggleAffichageInfos() {
         this.estInfosAffichees = !this.estInfosAffichees;
@@ -767,7 +768,7 @@ public abstract class Joueur {
     }
 
     /**
-     * Permet d'initialiser la zone de jeu du joueur.
+     * Permet d'initialiser les piles de la zone de jeu du joueur.
      * 
      * @return La zone de jeu initialisée.
      */
