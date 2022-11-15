@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.Collections;
 
 /**
@@ -13,16 +12,6 @@ public class Pioche extends PileCartes {
      */
     public Pioche() {
         super();
-    }
-
-    /**
-     * Constructeur ajouté pour faciliter les tests.
-     * 
-     * @param ArrayList<Carte> cartes
-     */
-    protected Pioche(ArrayList<Carte> cartes) {
-        super();
-        alimenter(cartes);
     }
 
     /**

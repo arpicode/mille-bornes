@@ -169,7 +169,9 @@ public abstract class Joueur {
                 return jouerCarteEtape(numeroCarte);
 
             case Carte.TYPE_ATTAQUE:
-                return jouerCarteAttaque(numeroCarte, joueurs, pioche, defausse);
+                int numeroJoueur = choisirJoueur(joueurs);
+                Joueur joueurCilbe = joueurs.get(numeroJoueur - 1);
+                return jouerCarteAttaque(numeroCarte, joueurCilbe, pioche, defausse);
 
             case Carte.TYPE_PARADE:
                 return jouerCarteParade(numeroCarte);
@@ -188,7 +190,7 @@ public abstract class Joueur {
      * @param numeroCarte Numéro de la carte choisie.
      * @param pile        Pile de la zone de jeu.
      */
-    private void poserCarte(int numeroCarte, Joueur joueur, Pile pile) {
+    public void poserCarte(int numeroCarte, Joueur joueur, Pile pile) {
         joueur.getPile(pile).push(this.main.remove(numeroCarte - 1));
     }
 
@@ -272,11 +274,7 @@ public abstract class Joueur {
      * @return Numéro de la carte choisie ou -1 si la carte n'est pas
      *         jouable.
      */
-    private int jouerCarteAttaque(int numeroCarte, ArrayList<Joueur> joueurs, PileCartes pioche, Defausse defausse) {
-        // Choisir le joueur à attaquer.
-        int numeroJoueur = choisirJoueur(joueurs);
-        Joueur joueurCible = joueurs.get(numeroJoueur - 1);
-
+    public int jouerCarteAttaque(int numeroCarte, Joueur joueurCible, PileCartes pioche, PileCartes defausse) {
         if (peutAttaquerJoueur(this.main.get(numeroCarte - 1), joueurCible)) {
 
             parler("J'attaque " + joueurCible.getNom()
@@ -314,18 +312,18 @@ public abstract class Joueur {
      * @return true si la carte est jouable, false si non.
      */
     public boolean peutAttaquerJoueur(Carte carte, Joueur joueur) {
-        // Un joueur peut attaquer s'il n'est pas déjà attaqué ET qu'il est en train de
-        // roulez OU si la carte est une Limite de Vitesse
-        if (!estAttaque(joueur) && peutRouler(joueur)
-                || carte.estEgale(Carte.TYPE_ATTAQUE, Carte.LIMITE_VITESSE)) {
+        // Un joueur peut être attaquer s'il n'est pas déjà attaqué ET qu'il est en
+        // train de roulez OU si la carte est une Limite de Vitesse
+        if (peutRouler(joueur) || carte.estEgale(Carte.TYPE_ATTAQUE, Carte.LIMITE_VITESSE)) {
             // regarder si le joueur est sous limitation de vitesse.
             if (joueur.estAttaquePar(Carte.LIMITE_VITESSE)) {
                 // il ne peut pas être attaqué par une limitation de vitesse.
                 if (carte.estEgale(Carte.TYPE_ATTAQUE, Carte.LIMITE_VITESSE)) {
-                    afficherInfo(joueur.getNom() + " a déjà", carte);
+                    afficherInfo(joueur.getNom() + " est déjà attaqué par", carte);
                     return false;
                 }
             }
+
             // regarder si le joueur est protégé par une botte.
             if (!joueur.getPile(Pile.BOTTE).isEmpty()) {
                 // Si le joueur à la botte Prioritaire
@@ -337,27 +335,30 @@ public abstract class Joueur {
                                 Carte.getNom(Carte.TYPE_BOTTE, Carte.PRIORITAIRE));
                         return false;
                     }
-                    // Si le joueur à la botte Citerne
-                } else if (joueur.getPile(Pile.BOTTE)
-                        .contient(Carte.getNom(Carte.TYPE_BOTTE, Carte.CITERNE))) {
+                }
+
+                // Si le joueur à la botte Citerne
+                if (joueur.getPile(Pile.BOTTE).contient(Carte.getNom(Carte.TYPE_BOTTE, Carte.CITERNE))) {
                     // Il ne peut pas être attaqué par Panne d'Essence.
                     if (carte.estEgale(Carte.TYPE_ATTAQUE, Carte.PANNE_ESSENCE)) {
                         afficherInfo(joueur.getNom() + " est protégé par",
                                 Carte.getNom(Carte.TYPE_BOTTE, Carte.CITERNE));
                         return false;
                     }
-                    // Si le joueur à la botte Increvable.
-                } else if (joueur.getPile(Pile.BOTTE)
-                        .contient(Carte.getNom(Carte.TYPE_BOTTE, Carte.INCREVABLE))) {
+                }
+
+                // Si le joueur à la botte Increvable.
+                if (joueur.getPile(Pile.BOTTE).contient(Carte.getNom(Carte.TYPE_BOTTE, Carte.INCREVABLE))) {
                     // Il ne peut pas être attaqué par Crevé
                     if (carte.estEgale(Carte.TYPE_ATTAQUE, Carte.CREVE)) {
                         afficherInfo(joueur.getNom() + " est protégé par",
                                 Carte.getNom(Carte.TYPE_BOTTE, Carte.INCREVABLE));
                         return false;
                     }
-                    // Si le joueur à la botte As du Volant
-                } else if (joueur.getPile(Pile.BOTTE)
-                        .contient(Carte.getNom(Carte.TYPE_BOTTE, Carte.AS_VOLANT))) {
+                }
+
+                // Si le joueur à la botte As du Volant
+                if (joueur.getPile(Pile.BOTTE).contient(Carte.getNom(Carte.TYPE_BOTTE, Carte.AS_VOLANT))) {
                     // Il ne peut pas être attaqué par Accident
                     if (carte.estEgale(Carte.TYPE_ATTAQUE, Carte.ACCIDENT)) {
                         afficherInfo(joueur.getNom() + " est protégé par",
@@ -413,10 +414,11 @@ public abstract class Joueur {
     public boolean peutJouerParade(Carte carteParade) {
         // Cas ou la carte parade est un Feu Vert.
         if (carteParade.estEgale(Carte.TYPE_PARADE, Carte.FEU_VERT)) {
-            // Si la pile Bataille est vide
+            // Si la pile Bataille est vide ET qu'il n'est pas Prioritaire
             // OU le joueur est attaqué par une attaque Feu Rouge
             // OU le joueur ne peut pas roulez ET qu'il n'est pas attaqué.
             if (this.getPile(Pile.BATAILLE).isEmpty()
+                    && !this.getPile(Pile.BOTTE).contient(Carte.getNom(Carte.TYPE_BOTTE, Carte.PRIORITAIRE))
                     || this.estAttaquePar(Carte.FEU_ROUGE)
                     || (!peutRouler(this) && !estAttaque(this))) {
                 return true;
@@ -449,7 +451,7 @@ public abstract class Joueur {
             if (this.estAttaquePar(Carte.ACCIDENT)) {
                 return true;
             }
-            afficherInfo("Vous n'être pas attaqué(e) par", new Carte(Carte.TYPE_ATTAQUE, Carte.ACCIDENT));
+            afficherInfo("Vous n'êtes pas attaqué(e) par", new Carte(Carte.TYPE_ATTAQUE, Carte.ACCIDENT));
         }
 
         return false;
@@ -463,7 +465,7 @@ public abstract class Joueur {
      * 
      * @return Numéro de la carte jouée.
      */
-    private int jouerCarteBotte(int numeroCarte, Defausse defausse) {
+    private int jouerCarteBotte(int numeroCarte, PileCartes defausse) {
         Carte carteBotte = this.main.get(numeroCarte - 1);
 
         // Il n'y a pas de conditions pour pouvoir jouer une botte.
@@ -550,13 +552,6 @@ public abstract class Joueur {
      */
     public PileCartes getPile(Pile pile) {
         return this.zoneDeJeu.get(pile);
-    }
-
-    /**
-     * Active/Désactive l'affichage des infos sur la jouabilité des cartes.
-     */
-    public void toggleAffichageInfos() {
-        this.estInfosAffichees = !this.estInfosAffichees;
     }
 
     /**
@@ -698,6 +693,13 @@ public abstract class Joueur {
     }
 
     /**
+     * Setter permettant d'affecter les Km parcourus par le joueur.
+     */
+    public void setKmParcourus(int value) {
+        this.kmParcourus = value;
+    }
+
+    /**
      * Getter permettant d'obtenir le score du joueur.
      * 
      * @return Score du joueur.
@@ -749,6 +751,24 @@ public abstract class Joueur {
      */
     public ArrayList<Carte> getMain() {
         return main;
+    }
+
+    /**
+     * Getter permetant de savoir si l'affichage des infos sur la jouabilité
+     * d'une carte par le joueur est actif ou non.
+     */
+    public boolean estInfosAffichees() {
+        return this.estInfosAffichees;
+    }
+
+    /**
+     * Setter permetant d'activer (true) ou désactiver (false) l'affichage
+     * des infos sur la jouabilité d'une carte par le joueur.
+     * 
+     * @param value
+     */
+    public void setEstInfosAffichees(boolean value) {
+        this.estInfosAffichees = value;
     }
 
     /**

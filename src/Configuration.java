@@ -22,7 +22,7 @@ public class Configuration {
     // Expression régulière qui match une ligne qui commence avec une paire de
     // valeurs possibles : nombre_de_cartes;nom_de_la_carte. (Il est permis
     // d'avoir des espaces devant la ligne et autour du ';'.)
-    private static final String cardRegexp = "^(\\s*\\d+\\s*;\\s*[\\d\\p{L}\\-' ]+[\\d\\p{L}])";
+    public static final String cardRegexp = "^(\\s*\\d+\\s*;\\s*[\\d\\p{L}\\-' ]+[\\d\\p{L}])";
     private static final Pattern cardPattern = Pattern.compile(cardRegexp);
 
     /**
@@ -143,7 +143,7 @@ public class Configuration {
      * 
      * @return true s'il existe, false si non.
      */
-    private static boolean exists(String fullFileName) {
+    public static boolean exists(String fullFileName) {
         return new File(fullFileName).isFile();
     }
 

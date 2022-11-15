@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.Stack;
 
 /**
@@ -46,19 +45,6 @@ public class PileCartes extends Stack<Carte> {
         }
 
         return cpt;
-    }
-
-    /**
-     * Méthode ajoutée pour les tests : alimente une pile de cartes.
-     * 
-     * @param ArrayList<Carte> cartes
-     */
-    protected void alimenter(ArrayList<Carte> cartes) {
-        for (int i = 0; i < cartes.size(); i++) {
-            if (cartes.get(i).estValide()) {
-                this.push(cartes.get(i));
-            }
-        }
     }
 
 }
