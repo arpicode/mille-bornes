@@ -23,7 +23,12 @@ public class Jeu {
     /**
      * Nombre de Km à parcourir pour gagné une manche.
      */
-    public static final int SCORE_MAX = 1000;
+    public static final int NB_KM_MAX = 1000;
+
+    /**
+     * Nombre de points à avoir pour gagner une partie.
+     */
+    public static final int SCORE_MAX = 5000;
 
     /**
      * Points accordés aux gagnant d'une manche. Les gagnants sont ceux qui
@@ -101,7 +106,8 @@ public class Jeu {
 
             this.distribuerCartes();
             estMancheTerminee = false;
-            Affichage.message("Début de la manche n° " + nbManchesJouees);
+            Affichage.message("Début de la manche n° " + (nbManchesJouees + 1));
+            Affichage.attendre(null);
 
             while (!estMancheTerminee) {
                 Affichage.clearScreen();
@@ -128,7 +134,7 @@ public class Jeu {
                 }
 
                 // Le joueur a fini son tour, regarder s'il a atteint les 1000 Bornes.
-                if (joueurs.get(this.idJoueurCourant).getKmParcourus() == 1000) {
+                if (joueurs.get(this.idJoueurCourant).getKmParcourus() == Jeu.NB_KM_MAX) {
                     estMancheTerminee = true;
                 } else {
                     // S'il n'y a plus de carte dans la pioche ET que tout le monde a passé son
@@ -358,41 +364,6 @@ public class Jeu {
         }
 
         return estPiochesValide;
-    }
-
-    /**
-     * Afficher les données du jeu. Utilisée pour tester la classe.
-     */
-    public void afficherDonnees() {
-        // Nombre de joueurs
-        System.out.println("Nombre de joueur: " + this.nbJoueurs);
-        System.out.println();
-
-        // Pioche normale
-        System.out.println("Pioche (" + this.pioche.size() + " cartes):");
-        System.out.println(this.pioche);
-        System.out.println();
-
-        // Pioche Météo
-        System.out.println("Pioche Météo (" + this.piocheMeteo.size() + " cartes):");
-        System.out.println(this.piocheMeteo);
-        System.out.println();
-
-        // Défausse
-        System.out.println("Défausse (" + this.defausse.size() + " cartes):");
-        System.out.println(this.defausse);
-        System.out.println();
-
-        // Joueurs
-        System.out.println("Joueurs: ");
-        for (Joueur joueur : joueurs) {
-            System.out.println(joueur);
-        }
-        System.out.println();
-
-        // Joueur courant
-        System.out.println("Id du Joueur courant: " + this.idJoueurCourant);
-        System.out.println();
     }
 
 }
