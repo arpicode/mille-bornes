@@ -67,7 +67,7 @@ public class Affichage {
         final String messageErreur = Color.RED + "Ce n'est pas un nombre entre " + Jeu.NB_JOUEURS_MIN + " et "
                 + Jeu.NB_JOUEURS_MAX + " !" + Color.END;
         String input = null;
-        String regex = "[" + Jeu.NB_JOUEURS_MIN + "-" + Jeu.NB_JOUEURS_MAX + "]";
+        String regex = "^[" + Jeu.NB_JOUEURS_MIN + "-" + Jeu.NB_JOUEURS_MAX + "]$";
 
         do {
             System.out.printf(Color.YELLOW + "Entrez le nombre de joueurs (entre %d et %d) : " + Color.END,
@@ -91,7 +91,7 @@ public class Affichage {
     public static String saisieNomEtAgeJoueur(int numeroJoueur) {
         String input = null;
         String regex = "^(\\p{L}+[-]{0,1}\\p{L}+)\\s+(\\d+)$";
-        String error = "Erreur de saisie !";
+        String error = Color.RED + "Erreur de saisie !" + Color.END;
 
         do {
             System.out.printf(Color.YELLOW + "Entrez le nom et l'âge du joueur n°%d : " + Color.END, numeroJoueur);
@@ -224,7 +224,7 @@ public class Affichage {
     }
 
     /**
-     * Lit la une chaîne de caractère saisie dans la console. Elle doit matcher
+     * Lit la chaîne de caractère saisie dans la console. Elle doit matcher
      * l'expression regulière regex. S'il y a des groupes capturés ils sont
      * retournés dans le résultat séparés par ';'.
      * (i.e. : groupe1;groupe2; ... ;groupeN).

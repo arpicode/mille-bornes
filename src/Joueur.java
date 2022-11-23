@@ -312,8 +312,8 @@ public abstract class Joueur {
      * @return true si la carte est jouable, false si non.
      */
     public boolean peutAttaquerJoueur(Carte carte, Joueur joueur) {
-        // Un joueur peut être attaquer s'il n'est pas déjà attaqué ET qu'il est en
-        // train de roulez OU si la carte est une Limite de Vitesse
+        // Un joueur peut être attaquer s'il peut roulez OU si la carte est une Limite
+        // de Vitesse
         if (peutRouler(joueur) || carte.estEgale(Carte.TYPE_ATTAQUE, Carte.LIMITE_VITESSE)) {
             // regarder si le joueur est sous limitation de vitesse.
             if (joueur.estAttaquePar(Carte.LIMITE_VITESSE)) {
@@ -331,7 +331,7 @@ public abstract class Joueur {
                     // il ne peut pas être attaqué par Feu Rouge ou Limite de Vitesse
                     if (carte.estEgale(Carte.TYPE_ATTAQUE, Carte.LIMITE_VITESSE)
                             || carte.estEgale(Carte.TYPE_ATTAQUE, Carte.FEU_ROUGE)) {
-                        afficherInfo(joueur.getNom() + " est protégé par",
+                        afficherInfo(joueur.getNom() + " est protégé(e) par",
                                 Carte.getNom(Carte.TYPE_BOTTE, Carte.PRIORITAIRE));
                         return false;
                     }
@@ -341,7 +341,7 @@ public abstract class Joueur {
                 if (joueur.getPile(Pile.BOTTE).contient(Carte.getNom(Carte.TYPE_BOTTE, Carte.CITERNE))) {
                     // Il ne peut pas être attaqué par Panne d'Essence.
                     if (carte.estEgale(Carte.TYPE_ATTAQUE, Carte.PANNE_ESSENCE)) {
-                        afficherInfo(joueur.getNom() + " est protégé par",
+                        afficherInfo(joueur.getNom() + " est protégé(e) par",
                                 Carte.getNom(Carte.TYPE_BOTTE, Carte.CITERNE));
                         return false;
                     }
@@ -351,7 +351,7 @@ public abstract class Joueur {
                 if (joueur.getPile(Pile.BOTTE).contient(Carte.getNom(Carte.TYPE_BOTTE, Carte.INCREVABLE))) {
                     // Il ne peut pas être attaqué par Crevé
                     if (carte.estEgale(Carte.TYPE_ATTAQUE, Carte.CREVE)) {
-                        afficherInfo(joueur.getNom() + " est protégé par",
+                        afficherInfo(joueur.getNom() + " est protégé(e) par",
                                 Carte.getNom(Carte.TYPE_BOTTE, Carte.INCREVABLE));
                         return false;
                     }
@@ -361,7 +361,7 @@ public abstract class Joueur {
                 if (joueur.getPile(Pile.BOTTE).contient(Carte.getNom(Carte.TYPE_BOTTE, Carte.AS_VOLANT))) {
                     // Il ne peut pas être attaqué par Accident
                     if (carte.estEgale(Carte.TYPE_ATTAQUE, Carte.ACCIDENT)) {
-                        afficherInfo(joueur.getNom() + " est protégé par",
+                        afficherInfo(joueur.getNom() + " est protégé(e) par",
                                 Carte.getNom(Carte.TYPE_BOTTE, Carte.AS_VOLANT));
                         return false;
                     }
@@ -430,21 +430,21 @@ public abstract class Joueur {
             if (this.estAttaquePar(Carte.LIMITE_VITESSE)) {
                 return true;
             }
-            afficherInfo("Vous n'être pas attaqué(e) par", new Carte(Carte.TYPE_ATTAQUE, Carte.LIMITE_VITESSE));
+            afficherInfo("Vous n'êtes pas attaqué(e) par", new Carte(Carte.TYPE_ATTAQUE, Carte.LIMITE_VITESSE));
             // Si non, si la carte parade est la carte Essence.
         } else if (carteParade.estEgale(Carte.TYPE_PARADE, Carte.ESSENCE)) {
             // Si le joueur est attaqué par une attaque Panne d'Essence.
             if (this.estAttaquePar(Carte.PANNE_ESSENCE)) {
                 return true;
             }
-            afficherInfo("Vous n'être pas attaqué(e) par", new Carte(Carte.TYPE_ATTAQUE, Carte.PANNE_ESSENCE));
+            afficherInfo("Vous n'êtes pas attaqué(e) par", new Carte(Carte.TYPE_ATTAQUE, Carte.PANNE_ESSENCE));
             // Si non, si la carte parade est une Roue de Secours.
         } else if (carteParade.estEgale(Carte.TYPE_PARADE, Carte.ROUE_SECOURS)) {
             // Si le joueur est attaqué par une attaque Crevé.
             if (this.estAttaquePar(Carte.CREVE)) {
                 return true;
             }
-            afficherInfo("Vous n'être pas attaqué(e) par", new Carte(Carte.TYPE_ATTAQUE, Carte.CREVE));
+            afficherInfo("Vous n'êtes pas attaqué(e) par", new Carte(Carte.TYPE_ATTAQUE, Carte.CREVE));
             // Si non, si la carte parade est une Réparation.
         } else if (carteParade.estEgale(Carte.TYPE_PARADE, Carte.REPARATION)) {
             // Si le joueur est attaqué par une attaque Accident.

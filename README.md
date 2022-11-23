@@ -1,5 +1,5 @@
-# Projet RTAI
+# Projet LP RTAI
 
 ```
- En chantier...
+ Modélisation et implémentation du jeu le "Mille Bornes".
 ```

@@ -1,4 +1,3 @@
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -144,7 +143,7 @@ public class Configuration {
      * @return true s'il existe, false si non.
      */
     public static boolean exists(String fullFileName) {
-        return new File(fullFileName).isFile();
+        return Files.exists(Paths.get(fullFileName));
     }
 
     /**
@@ -169,10 +168,10 @@ public class Configuration {
     }
 
     /**
-     * Teste si la ligne est un commentaire ou null.
+     * Teste si la ligne est un commentaire ou vide.
      * 
      * @param line Une ligne lue dans le fichier de configuration.
-     * @return true si c'est un commentaire ou null, false si non.
+     * @return true si c'est un commentaire ou vide, false si non.
      */
     private static boolean isComment(String line) {
         return line.trim().isEmpty() || line.trim().charAt(0) == '#';
