@@ -1,6 +1,6 @@
 /**
  * Classe principale du Mille Bornes.
- * Point d'entré du programme.
+ * Point d'entrée du programme.
  * 
  * @author Les Bornés
  */

@@ -57,7 +57,7 @@ public class Configuration {
             exception.printStackTrace();
             System.err.println("Une erreur est survenue pendant la lecture du fichier de configuration.");
         }
-        System.out.println("Terminé.\n");
+        System.out.println("Terminée.\n");
 
         if (result.size() == 0) {
             System.out.println("Le fichier de configuration n'a pas de cartes !");
