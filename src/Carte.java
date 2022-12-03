@@ -83,7 +83,7 @@ public class Carte {
     };
 
     private String nom; // Nom de la carte.
-    private int type; // Type de la carte.
+    private int type; // Type de la carte. Choisi parmis les constantes de classe TYPE_...
 
     /**
      * Constructeur permettant d'instancier une carte grace à son nom.

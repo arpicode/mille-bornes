@@ -180,9 +180,7 @@ public class Jeu {
     }
 
     /**
-     * Calculer le score des joueurs pour la manche et déterminer les gagnants.
-     * Les gagnants sont ceux avec le plus grand Km parcourus par forcement ceux
-     * avec le plus gros score.
+     * Calculer le score des joueurs pour la manche.
      * 
      * @return Les joueurs triés par Km parcourus décroissant.
      */
@@ -208,6 +206,7 @@ public class Jeu {
                 return -1;
         });
 
+        // Calculer le score.
         int plusGrosKm = tmpJoueurs.get(0).getKmParcourus();
         for (Joueur joueur : tmpJoueurs) {
             // Ajouter les KmParcourus au score.
